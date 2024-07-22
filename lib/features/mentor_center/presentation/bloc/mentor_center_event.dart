@@ -1,4 +1,4 @@
-part of 'mentorcenter_bloc.dart';
+part of 'mentor_center_bloc.dart';
 
 abstract class MentorcenterEvent extends Equatable {
   const MentorcenterEvent();
