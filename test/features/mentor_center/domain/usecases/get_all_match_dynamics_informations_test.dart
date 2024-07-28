@@ -37,7 +37,7 @@ void main(){
         .thenAnswer((_) async => Right(tAllMatchDynamicInformations));
 
       // act
-      final result = await usecase.execute();
+      final result = await usecase();
 
       // assert
       expect(result, Right(tAllMatchDynamicInformations));
