@@ -9,6 +9,6 @@ class GetAllMatchDynamicInformations{
   GetAllMatchDynamicInformations(this.repository);
 
   Future<Either<Failure, List<MatchDynamics>>> execute() async {
-    return await repository.getAllMatchDynamicInformations();
+    return await repository.getAllMatchDynamicsInformations();
   }
 }
