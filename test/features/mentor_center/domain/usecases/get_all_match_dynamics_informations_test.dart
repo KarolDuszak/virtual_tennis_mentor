@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:virtual_tennis_mentor/core/usecases/usecase.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/domain/entities/match_dynamics.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/domain/repositories/match_dynamics_repository.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/domain/usecases/get_all_match_dynamics_informations.dart';
@@ -37,7 +38,7 @@ void main(){
         .thenAnswer((_) async => Right(tAllMatchDynamicInformations));
 
       // act
-      final result = await usecase(Params());
+      final result = await usecase(NoParams());
 
       // assert
       expect(result, Right(tAllMatchDynamicInformations));
