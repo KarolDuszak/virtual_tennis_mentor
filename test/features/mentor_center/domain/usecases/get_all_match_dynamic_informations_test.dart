@@ -1,0 +1,45 @@
+import 'package:dartz/dartz.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:virtual_tennis_mentor/features/mentor_center/domain/entities/match_dynamic_entity.dart';
+import 'package:virtual_tennis_mentor/features/mentor_center/domain/repositories/match_dynamic_repository.dart';
+import 'package:virtual_tennis_mentor/features/mentor_center/domain/usecases/get_all_match_dynamic_informations.dart';
+
+class MockMatchDynamicRepository extends Mock
+    implements MatchDynamicRepository {}
+
+
+void main(){
+  late GetAllMatchDynamicInformations usecase;
+  late MockMatchDynamicRepository mockMatchDynamicRepository;
+
+  setUp((){
+    mockMatchDynamicRepository = MockMatchDynamicRepository();
+    usecase = GetAllMatchDynamicInformations(mockMatchDynamicRepository);
+  });
+
+  final tAllMatchDynamicInformations = List<MatchDynamicEntity>.generate(3
+        ,(int index) => MatchDynamicEntity(
+          title: index.toString(),
+           description: "This is discription nr: ${index.toString()}"),);
+
+  test(
+    'Should get all 3 match dynamic informations from repository',
+    () async {
+      // arrange
+
+      // when is "On the fly" implementation return Right(tAllMatchDynamicInformations)
+      // any time getAllMatchDynamicInformations is called
+      when(() => mockMatchDynamicRepository.getAllMatchDynamicInformations())
+        .thenAnswer((_) async => Right(tAllMatchDynamicInformations));
+
+      // act
+      final result = await usecase.execute();
+
+      // assert
+      expect(result, Right(tAllMatchDynamicInformations));
+      verify(() => mockMatchDynamicRepository.getAllMatchDynamicInformations());
+      verifyNoMoreInteractions(mockMatchDynamicRepository);
+    }
+  );
+}
