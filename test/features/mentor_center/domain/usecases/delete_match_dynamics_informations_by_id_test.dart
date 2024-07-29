@@ -7,12 +7,11 @@ import 'package:virtual_tennis_mentor/features/mentor_center/domain/usecases/del
 class MockMatchDynamicRepository extends Mock
     implements MatchDynamicRepository {}
 
-
-void main(){
+void main() {
   late DeleteMatchDynamicInformationById usecase;
   late MockMatchDynamicRepository mockMatchDynamicRepository;
 
-  setUp((){
+  setUp(() {
     mockMatchDynamicRepository = MockMatchDynamicRepository();
     usecase = DeleteMatchDynamicInformationById(mockMatchDynamicRepository);
   });
@@ -27,16 +26,17 @@ void main(){
 
       // when is "On the fly" implementation return Right(tAllMatchDynamicInformations)
       // any time getAllMatchDynamicInformations is called
-      when(() => mockMatchDynamicRepository.deleteMatchDynamicsInformationById(tId))
-        .thenAnswer((_) async => Right(tSuccessExitCode));
+      when(() => mockMatchDynamicRepository.deleteMatchDynamicsInformationById(
+          tId)).thenAnswer((_) async => Right(tSuccessExitCode));
 
       // act
       final result = await usecase(Params(id: tId));
 
       // assert
       expect(result, Right(tSuccessExitCode));
-      verify(() => mockMatchDynamicRepository.deleteMatchDynamicsInformationById(tId));
+      verify(() =>
+          mockMatchDynamicRepository.deleteMatchDynamicsInformationById(tId));
       verifyNoMoreInteractions(mockMatchDynamicRepository);
-    }
+    },
   );
 }

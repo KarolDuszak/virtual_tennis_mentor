@@ -9,23 +9,22 @@ import 'package:virtual_tennis_mentor/features/mentor_center/domain/usecases/get
 class MockMatchDynamicRepository extends Mock
     implements MatchDynamicRepository {}
 
-
-void main(){
+void main() {
   late GetAllMatchDynamicInformations usecase;
   late MockMatchDynamicRepository mockMatchDynamicRepository;
 
-  setUp((){
+  setUp(() {
     mockMatchDynamicRepository = MockMatchDynamicRepository();
     usecase = GetAllMatchDynamicInformations(mockMatchDynamicRepository);
   });
 
-  final tAllMatchDynamicInformations = List<MatchDynamics>.
-      generate(3, (int index) => MatchDynamics(
-          id: index,
-          title: index.toString(),
-          description: "This is discription nr: ${index.toString()}"
-        )
-      );
+  final tAllMatchDynamicInformations = List<MatchDynamics>.generate(
+    3,
+    (int index) => MatchDynamics(
+        id: index,
+        title: index.toString(),
+        description: "This is discription nr: ${index.toString()}"),
+  );
 
   test(
     'Should get all 3 match dynamic informations from repository',
@@ -35,15 +34,18 @@ void main(){
       // when is "On the fly" implementation return Right(tAllMatchDynamicInformations)
       // any time getAllMatchDynamicInformations is called
       when(() => mockMatchDynamicRepository.getAllMatchDynamicsInformations())
-        .thenAnswer((_) async => Right(tAllMatchDynamicInformations));
+          .thenAnswer(
+        (_) async => Right(tAllMatchDynamicInformations),
+      );
 
       // act
       final result = await usecase(NoParams());
 
       // assert
       expect(result, Right(tAllMatchDynamicInformations));
-      verify(() => mockMatchDynamicRepository.getAllMatchDynamicsInformations());
+      verify(
+          () => mockMatchDynamicRepository.getAllMatchDynamicsInformations());
       verifyNoMoreInteractions(mockMatchDynamicRepository);
-    }
+    },
   );
 }
