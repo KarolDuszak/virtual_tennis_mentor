@@ -1,4 +1,4 @@
-import 'package:virtual_tennis_mentor/features/mentor_center/domain/entities/match_dynamics.dart';
+import '../../domain/entities/match_dynamics.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'match_dynamics_model.g.dart';
