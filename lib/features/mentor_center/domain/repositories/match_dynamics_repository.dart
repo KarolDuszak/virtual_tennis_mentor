@@ -5,7 +5,7 @@ import '../entities/match_dynamics.dart';
 
 abstract class MatchDynamicRepository{
   //returns exit code 200 on success
-  Future<Either<Failure, int>> insertMatchDynamicInformation(MatchDynamics matchDynamics);
+  Future<Either<Failure, int>> insertMatchDynamicInformation(String title, String description);
   //returns exit code 200 on success
   Future<Either<Failure, int>> updateMatchDynamicInformationById(int id);
   Future<Either<Failure, List<MatchDynamics>>> getAllMatchDynamicsInformations();
