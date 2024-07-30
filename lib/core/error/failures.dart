@@ -8,3 +8,5 @@ abstract class Failure extends Equatable {
 class LocalDbFailure extends Failure {}
 
 class CanNotDeleteThisRecord extends Failure {}
+
+class CanNotFindRecordInDb extends Failure {}

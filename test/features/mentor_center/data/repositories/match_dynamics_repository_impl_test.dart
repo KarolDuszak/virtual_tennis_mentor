@@ -143,9 +143,14 @@ void main() {
     'deleteMatchDynamicsInformationById',
     () {
       final tIdToRemove = 14;
+      final tMatchDynamicsCustom = MatchDynamicsModel(
+          id: 14,
+          title: 'title',
+          description: 'description',
+          language: 'custom');
 
       test(
-        'should throw error when trying to delete not custom note',
+        'should get fail when trying to delete not custom note',
         () async {
           // arrange
           final tMatchDynamicsCustom = MatchDynamicsModel(
@@ -161,39 +166,49 @@ void main() {
           final result =
               await repository.deleteMatchDynamicsInfoById(tIdToRemove);
           // assert
-          verify(() =>
-              mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove));
+          verify(
+              () => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove));
           expect(result, equals(Left(CanNotDeleteThisRecord())));
         },
       );
 
       test(
-        'should get both selected language and custom if custom exists inside',
+        'should get 200 exit code on deleting custom match dynamic info',
         () async {
           // arrange
-          final tCustomAndPolishDynamics = tAllMatchDynamics
-              .where((i) => i.language == 'custom' || i.language == 'pl-PL')
-              .toList();
+          when(() => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove))
+              .thenAnswer((_) async => tMatchDynamicsCustom);
+          when(() =>
+                  mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove))
+              .thenAnswer((_) async => 200);
 
-          when(() => mockUserPreferences.language)
-              .thenAnswer((_) async => "pl-PL");
-          when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
-              .thenAnswer((_) async => tAllMatchDynamics);
-
-          // making sure prepared data is correct
-          expect(
-              tCustomAndPolishDynamics.any((item) => item.language == 'custom'),
-              true);
-          expect(
-              tCustomAndPolishDynamics.any((item) => item.language == 'pl-PL'),
-              true);
           // act
-          final result = await repository.getAllMatchDynamicsInfo();
+          final result =
+              await repository.deleteMatchDynamicsInfoById(tIdToRemove);
 
           // assert
+          verify(
+              () => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove));
           expect(result, isA<Right>());
-          expect(result.fold((l) => l, (r) => r),
-              equals(tCustomAndPolishDynamics));
+          expect(result, 200);
+        },
+      );
+
+      test(
+        'should return fail when record not found in db',
+        () async {
+          // arrange
+          when(() => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove))
+              .thenThrow((_) async => CouldNotGetException());
+
+          // act
+          final result =
+              await repository.deleteMatchDynamicsInfoById(tIdToRemove);
+
+          // assert
+          verify(() =>
+              mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove));
+          expect(result, equals(Left(CanNotFindRecordInDb())));
         },
       );
 
@@ -201,8 +216,8 @@ void main() {
         'should return failure on localdb exception',
         () async {
           // arrange
-          when(() => mockUserPreferences.language)
-              .thenAnswer((_) async => "en-UK");
+          when(() => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove))
+              .thenAnswer((_) async => tMatchDynamicsCustom);
           when(() =>
                   mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove))
               .thenThrow(CouldNotGetException());
@@ -217,4 +232,50 @@ void main() {
       );
     },
   );
+
+  group('update', () {
+    test(
+      'should not update when records language is not custom',
+      () async {
+        // arrange
+
+        // act
+
+        // assert
+      },
+    );
+
+    test(
+      'should return updated object from db',
+      () async {
+        // arrange
+
+        // act
+
+        // assert
+      },
+    );
+
+    test(
+      'should should return failure when object not found in db',
+      () async {
+        // arrange
+
+        // act
+
+        // assert
+      },
+    );
+
+    test(
+      'should return failure on db exception',
+      () async {
+        // arrange
+
+        // act
+
+        // assert
+      },
+    );
+  });
 }
