@@ -1,5 +1,6 @@
-import '../../domain/entities/match_dynamics.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import '../../domain/entities/match_dynamics.dart';
 
 part 'match_dynamics_model.g.dart';
 

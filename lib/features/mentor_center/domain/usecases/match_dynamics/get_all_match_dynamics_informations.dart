@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
-import '../../../../../core/usecases/usecase.dart';
+
 import '../../../../../core/error/failures.dart';
+import '../../../../../core/usecases/usecase.dart';
 import '../../entities/match_dynamics.dart';
 import '../../repositories/match_dynamics_repository.dart';
 
