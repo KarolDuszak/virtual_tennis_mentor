@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:virtual_tennis_mentor/core/config/preferences.dart';
@@ -9,6 +10,16 @@ class MockLocalDataSource extends Mock
     implements MatchDynamicsLocalDataSource {}
 
 class MockUserPreferences extends Mock implements UserPreferences {}
+
+String getStubLanguage(int index) {
+  if (index % 2 == 0) {
+    return 'en-UK';
+  }
+  if (index % 3 == 0) {
+    return 'custom';
+  }
+  return 'pl-PL';
+}
 
 void main() {
   late MatchDynamicsRepositoryImpl repository;
@@ -26,9 +37,17 @@ void main() {
   group(
     'getAllMatchDynamicsInformations',
     () {
-      final tMatchDynamicsModel =
-          MatchDynamicsModel(id: 1, title: "title", description: 'description');
-      final tMatchDynamics = tMatchDynamicsModel;
+      final tAllMatchDynamicsInformations = List<MatchDynamicsModel>.generate(
+        10,
+        (int index) => MatchDynamicsModel(
+            id: index,
+            title: index.toString(),
+            description: "This is discription nr: ${index.toString()}",
+            language: getStubLanguage(index)),
+      );
+      final tEnglishMatchDynamicsInformations = tAllMatchDynamicsInformations
+          .where((i) => i.language == 'en-UK')
+          .toList();
 
       test(
         'should check which language is selected',
@@ -40,6 +59,21 @@ void main() {
           repository.getAllMatchDynamicsInformations();
           // assert
           verify(() => mockUserPreferences.language);
+        },
+      );
+
+      test(
+        'should not get for not languages differenet than set in user preferences',
+        () async {
+          // arrange
+          when(() => mockUserPreferences.language)
+              .thenAnswer((_) async => "en-UK");
+          when(() => mockLocalDataSource.getAllMatchDynamicsInformations())
+              .thenAnswer((_) async => tAllMatchDynamicsInformations);
+          // act
+          final result = repository.getAllMatchDynamicsInformations();
+          // assert
+          expect(result, Right(tEnglishMatchDynamicsInformations));
         },
       );
     },

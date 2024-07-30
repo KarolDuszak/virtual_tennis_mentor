@@ -11,6 +11,7 @@ MatchDynamicsModel _$MatchDynamicsModelFromJson(Map<String, dynamic> json) =>
       id: (json['id'] as num).toInt(),
       title: json['title'] as String,
       description: json['description'] as String,
+      language: json['language'] as String,
     );
 
 Map<String, dynamic> _$MatchDynamicsModelToJson(MatchDynamicsModel instance) =>
@@ -18,4 +19,5 @@ Map<String, dynamic> _$MatchDynamicsModelToJson(MatchDynamicsModel instance) =>
       'id': instance.id,
       'title': instance.title,
       'description': instance.description,
+      'language': instance.language,
     };

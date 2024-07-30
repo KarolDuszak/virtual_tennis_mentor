@@ -24,8 +24,8 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
   @override
   Future<Either<Failure, List<MatchDynamics>>>
       getAllMatchDynamicsInformations() {
-    // TODO: implement getAllMatchDynamicsInformations
-    throw UnimplementedError();
+    userPreferences.language;
+    return Future.value(Left(LocalDbFailure()));
   }
 
   // set language property to custom
