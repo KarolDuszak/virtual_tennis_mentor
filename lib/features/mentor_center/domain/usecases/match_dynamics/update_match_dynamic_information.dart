@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:virtual_tennis_mentor/features/mentor_center/domain/entities/match_dynamics.dart';
 
 import '../../../../../core/error/failures.dart';
 import '../../../../../core/usecases/usecase.dart';
@@ -14,15 +15,15 @@ class UpdateMatchDynamicInformationById extends UseCase<int, Params> {
 
   @override
   Future<Either<Failure, int>> call(Params params) async {
-    return await repository.updateMatchDynamicInformationById(params.id);
+    return await repository.updateMatchDynamicInformation(params.matchDynamics);
   }
 }
 
 class Params extends Equatable {
-  final int id;
+  final MatchDynamics matchDynamics;
 
-  Params({required this.id});
+  Params({required this.matchDynamics});
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [matchDynamics];
 }
