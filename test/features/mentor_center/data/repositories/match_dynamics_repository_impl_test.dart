@@ -37,7 +37,7 @@ void main() {
   group(
     'getAllMatchDynamicsInformations',
     () {
-      final tAllMatchDynamicsInformations = List<MatchDynamicsModel>.generate(
+      final tAllMatchDynamics = List<MatchDynamicsModel>.generate(
         10,
         (int index) => MatchDynamicsModel(
             id: index,
@@ -45,9 +45,6 @@ void main() {
             description: "This is discription nr: ${index.toString()}",
             language: getStubLanguage(index)),
       );
-      final tEnglishMatchDynamicsInformations = tAllMatchDynamicsInformations
-          .where((i) => i.language == 'en-UK')
-          .toList();
 
       test(
         'should check which language is selected',
@@ -66,14 +63,39 @@ void main() {
         'should not get for not languages differenet than set in user preferences',
         () async {
           // arrange
+          final tMatchDynamicsNoCustom =
+              tAllMatchDynamics.getRange(0, 2).toList();
+          final tEnglishMatchDynamics = tMatchDynamicsNoCustom
+              .where((i) => i.language == 'en-UK')
+              .toList();
+
           when(() => mockUserPreferences.language)
               .thenAnswer((_) async => "en-UK");
           when(() => mockLocalDataSource.getAllMatchDynamicsInformations())
-              .thenAnswer((_) async => tAllMatchDynamicsInformations);
+              .thenAnswer((_) async => tMatchDynamicsNoCustom);
           // act
           final result = repository.getAllMatchDynamicsInformations();
           // assert
-          expect(result, Right(tEnglishMatchDynamicsInformations));
+          expect(result, Right(tEnglishMatchDynamics));
+        },
+      );
+
+      test(
+        'should get both selected language and custom added',
+        () async {
+          // arrange
+          final tCustomAndPolishDynamics = tAllMatchDynamics
+              .where((i) => i.language == 'custom' || i.language == 'pl-PL')
+              .toList();
+
+          when(() => mockUserPreferences.language)
+              .thenAnswer((_) async => "pl-PL");
+          when(() => mockLocalDataSource.getAllMatchDynamicsInformations())
+              .thenAnswer((_) async => tAllMatchDynamics);
+          // act
+          final result = repository.getAllMatchDynamicsInformations();
+          // assert
+          expect(result, Right(tCustomAndPolishDynamics));
         },
       );
     },
