@@ -2,6 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:virtual_tennis_mentor/core/config/preferences.dart';
+import 'package:virtual_tennis_mentor/core/error/exceptions.dart';
+import 'package:virtual_tennis_mentor/core/error/failures.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/data/datasources/match_dynamics_local_data_source.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/data/models/match_dynamics_model.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/data/repositories/match_dynamics_repository_impl.dart';
@@ -123,11 +125,15 @@ void main() {
         'should return failure on localdb exception',
         () async {
           // arrange
-
+          when(() => mockUserPreferences.language)
+              .thenAnswer((_) async => "en-UK");
+          when(() => mockLocalDataSource.getAllMatchDynamicsInformations())
+              .thenThrow(CouldNotGetException());
           // act
-
+          final result = await repository.getAllMatchDynamicsInformations();
           // assert
-          expect(true, false);
+          verify(() => mockLocalDataSource.getAllMatchDynamicsInformations());
+          expect(result, equals(Left(LocalDbFailure())));
         },
       );
     },
