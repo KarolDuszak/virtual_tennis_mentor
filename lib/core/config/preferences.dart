@@ -1,3 +1,3 @@
-abstract class LanguageInfo {
+abstract class UserPreferences {
   Future<String> get language;
 }

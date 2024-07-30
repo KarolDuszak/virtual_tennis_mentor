@@ -8,10 +8,10 @@ import 'package:virtual_tennis_mentor/features/mentor_center/domain/repositories
 
 class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
   final MatchDynamicsLocalDataSource localDataSource;
-  final LanguageInfo languageInfo;
+  final UserPreferences userPreferences;
 
   MatchDynamicsRepositoryImpl(
-      {required this.localDataSource, required this.languageInfo});
+      {required this.localDataSource, required this.userPreferences});
 
   @override
   Future<Either<Failure, int>> deleteMatchDynamicsInformationById(int id) {
