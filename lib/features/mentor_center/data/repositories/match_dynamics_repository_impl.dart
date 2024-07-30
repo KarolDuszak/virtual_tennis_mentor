@@ -15,9 +15,15 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
       {required this.localDataSource, required this.userPreferences});
 
   @override
-  Future<Either<Failure, int>> deleteMatchDynamicsInfoById(int id) {
-    // TODO: implement deleteMatchDynamicsInformationById
-    throw UnimplementedError();
+  Future<Either<Failure, int>> deleteMatchDynamicsInfoById(int id) async {
+    try {
+      final matchDynamicsToDelete =
+          await localDataSource.getMatchDynamicsInfoById(id);
+      final result = await localDataSource.deleteMatchDynamicsInfoById(id);
+      return Right(result);
+    } on CouldNotGetException catch (_) {
+      return Left(CanNotFindRecordInDb());
+    }
   }
 
   @override
@@ -31,9 +37,11 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
               matchDynamics.language == preferedLanguage ||
               matchDynamics.language == 'custom')
           .toList();
-
+      if (filteredMatchDynamics.isEmpty) {
+        return Left(CanNotFindRecordInDb());
+      }
       return Right(filteredMatchDynamics);
-    } on CouldNotGetException catch (_) {
+    } on LocalDbException catch (_) {
       return Left(LocalDbFailure());
     }
   }

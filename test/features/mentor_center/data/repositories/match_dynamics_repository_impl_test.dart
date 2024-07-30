@@ -122,13 +122,29 @@ void main() {
       );
 
       test(
+        'should return failure when no record found in db',
+        () async {
+          // arrange
+          when(() => mockUserPreferences.language)
+              .thenAnswer((_) async => "en-UK");
+          when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
+              .thenAnswer((_) async => List.empty());
+          // act
+          final result = await repository.getAllMatchDynamicsInfo();
+          // assert
+          verify(() => mockLocalDataSource.getAllMatchDynamicsInfo());
+          expect(result, equals(Left(CanNotFindRecordInDb())));
+        },
+      );
+
+      test(
         'should return failure on localdb exception',
         () async {
           // arrange
           when(() => mockUserPreferences.language)
               .thenAnswer((_) async => "en-UK");
           when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
-              .thenThrow(CouldNotGetException());
+              .thenThrow(LocalDbException());
           // act
           final result = await repository.getAllMatchDynamicsInfo();
           // assert
@@ -189,8 +205,7 @@ void main() {
           // assert
           verify(
               () => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove));
-          expect(result, isA<Right>());
-          expect(result, 200);
+          expect(result, Right(200));
         },
       );
 
@@ -199,15 +214,14 @@ void main() {
         () async {
           // arrange
           when(() => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove))
-              .thenThrow((_) async => CouldNotGetException());
-
+              .thenThrow(CouldNotGetException());
           // act
           final result =
               await repository.deleteMatchDynamicsInfoById(tIdToRemove);
 
           // assert
-          verify(() =>
-              mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove));
+          verify(
+              () => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove));
           expect(result, equals(Left(CanNotFindRecordInDb())));
         },
       );
@@ -220,7 +234,7 @@ void main() {
               .thenAnswer((_) async => tMatchDynamicsCustom);
           when(() =>
                   mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove))
-              .thenThrow(CouldNotGetException());
+              .thenThrow(LocalDbException());
           // act
           final result =
               await repository.deleteMatchDynamicsInfoById(tIdToRemove);
