@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/domain/repositories/match_dynamics_repository.dart';
-import 'package:virtual_tennis_mentor/features/mentor_center/domain/usecases/delete_match_dynamic_information_by_id.dart';
+import 'package:virtual_tennis_mentor/features/mentor_center/domain/usecases/match_dynamics/delete_match_dynamic_information_by_id.dart';
 
 class MockMatchDynamicRepository extends Mock
     implements MatchDynamicRepository {}

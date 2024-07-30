@@ -4,7 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:virtual_tennis_mentor/core/usecases/usecase.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/domain/entities/match_dynamics.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/domain/repositories/match_dynamics_repository.dart';
-import 'package:virtual_tennis_mentor/features/mentor_center/domain/usecases/get_all_match_dynamics_informations.dart';
+import 'package:virtual_tennis_mentor/features/mentor_center/domain/usecases/match_dynamics/get_all_match_dynamics_informations.dart';
 
 class MockMatchDynamicRepository extends Mock
     implements MatchDynamicRepository {}
