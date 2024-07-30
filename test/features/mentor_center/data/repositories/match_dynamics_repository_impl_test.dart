@@ -54,10 +54,10 @@ void main() {
           // arrange
           when(() => mockUserPreferences.language)
               .thenAnswer((_) async => "en-UK");
-          when(() => mockLocalDataSource.getAllMatchDynamicsInformations())
+          when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenAnswer((_) async => tAllMatchDynamics);
           // act
-          await repository.getAllMatchDynamicsInformations();
+          await repository.getAllMatchDynamicsInfo();
           // assert
           verify(() => mockUserPreferences.language);
         },
@@ -75,7 +75,7 @@ void main() {
 
           when(() => mockUserPreferences.language)
               .thenAnswer((_) async => "en-UK");
-          when(() => mockLocalDataSource.getAllMatchDynamicsInformations())
+          when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenAnswer((_) async => tMatchDynamicsNoCustom);
 
           //making sure prepared data is correct
@@ -83,7 +83,7 @@ void main() {
               true);
 
           // act
-          final result = await repository.getAllMatchDynamicsInformations();
+          final result = await repository.getAllMatchDynamicsInfo();
           // assert
           expect(result, isA<Right>());
           expect(
@@ -101,7 +101,7 @@ void main() {
 
           when(() => mockUserPreferences.language)
               .thenAnswer((_) async => "pl-PL");
-          when(() => mockLocalDataSource.getAllMatchDynamicsInformations())
+          when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenAnswer((_) async => tAllMatchDynamics);
 
           // making sure prepared data is correct
@@ -112,7 +112,7 @@ void main() {
               tCustomAndPolishDynamics.any((item) => item.language == 'pl-PL'),
               true);
           // act
-          final result = await repository.getAllMatchDynamicsInformations();
+          final result = await repository.getAllMatchDynamicsInfo();
 
           // assert
           expect(result, isA<Right>());
@@ -127,12 +127,91 @@ void main() {
           // arrange
           when(() => mockUserPreferences.language)
               .thenAnswer((_) async => "en-UK");
-          when(() => mockLocalDataSource.getAllMatchDynamicsInformations())
+          when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenThrow(CouldNotGetException());
           // act
-          final result = await repository.getAllMatchDynamicsInformations();
+          final result = await repository.getAllMatchDynamicsInfo();
           // assert
-          verify(() => mockLocalDataSource.getAllMatchDynamicsInformations());
+          verify(() => mockLocalDataSource.getAllMatchDynamicsInfo());
+          expect(result, equals(Left(LocalDbFailure())));
+        },
+      );
+    },
+  );
+
+  group(
+    'deleteMatchDynamicsInformationById',
+    () {
+      final tIdToRemove = 14;
+
+      test(
+        'should throw error when trying to delete not custom note',
+        () async {
+          // arrange
+          final tMatchDynamicsCustom = MatchDynamicsModel(
+              id: 14,
+              title: 'title',
+              description: 'description',
+              language: 'en-UK');
+
+          when(() => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove))
+              .thenAnswer((_) async => tMatchDynamicsCustom);
+
+          // act
+          final result =
+              await repository.deleteMatchDynamicsInfoById(tIdToRemove);
+          // assert
+          verify(() =>
+              mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove));
+          expect(result, equals(Left(CanNotDeleteThisRecord())));
+        },
+      );
+
+      test(
+        'should get both selected language and custom if custom exists inside',
+        () async {
+          // arrange
+          final tCustomAndPolishDynamics = tAllMatchDynamics
+              .where((i) => i.language == 'custom' || i.language == 'pl-PL')
+              .toList();
+
+          when(() => mockUserPreferences.language)
+              .thenAnswer((_) async => "pl-PL");
+          when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
+              .thenAnswer((_) async => tAllMatchDynamics);
+
+          // making sure prepared data is correct
+          expect(
+              tCustomAndPolishDynamics.any((item) => item.language == 'custom'),
+              true);
+          expect(
+              tCustomAndPolishDynamics.any((item) => item.language == 'pl-PL'),
+              true);
+          // act
+          final result = await repository.getAllMatchDynamicsInfo();
+
+          // assert
+          expect(result, isA<Right>());
+          expect(result.fold((l) => l, (r) => r),
+              equals(tCustomAndPolishDynamics));
+        },
+      );
+
+      test(
+        'should return failure on localdb exception',
+        () async {
+          // arrange
+          when(() => mockUserPreferences.language)
+              .thenAnswer((_) async => "en-UK");
+          when(() =>
+                  mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove))
+              .thenThrow(CouldNotGetException());
+          // act
+          final result =
+              await repository.deleteMatchDynamicsInfoById(tIdToRemove);
+          // assert
+          verify(() =>
+              mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove));
           expect(result, equals(Left(LocalDbFailure())));
         },
       );

@@ -33,7 +33,7 @@ void main() {
 
       // when is "On the fly" implementation return Right(tAllMatchDynamicInformations)
       // any time getAllMatchDynamicInformations is called
-      when(() => mockMatchDynamicRepository.getAllMatchDynamicsInformations())
+      when(() => mockMatchDynamicRepository.getAllMatchDynamicsInfo())
           .thenAnswer(
         (_) async => Right(tAllMatchDynamicInformations),
       );
@@ -43,8 +43,7 @@ void main() {
 
       // assert
       expect(result, Right(tAllMatchDynamicInformations));
-      verify(
-          () => mockMatchDynamicRepository.getAllMatchDynamicsInformations());
+      verify(() => mockMatchDynamicRepository.getAllMatchDynamicsInfo());
       verifyNoMoreInteractions(mockMatchDynamicRepository);
     },
   );

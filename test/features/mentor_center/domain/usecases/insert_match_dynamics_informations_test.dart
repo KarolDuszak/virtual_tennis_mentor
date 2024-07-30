@@ -27,7 +27,7 @@ void main() {
 
     // when is "On the fly" implementation return Right(tAllMatchDynamicInformations)
     // any time getAllMatchDynamicInformations is called
-    when(() => mockMatchDynamicRepository.insertMatchDynamicInformation(
+    when(() => mockMatchDynamicRepository.insertMatchDynamicInfo(
         tTitle, tDescription)).thenAnswer((_) async => Right(tMatchDynamics));
 
     // act
@@ -36,7 +36,7 @@ void main() {
 
     // assert
     expect(result, Right(tMatchDynamics));
-    verify(() => mockMatchDynamicRepository.insertMatchDynamicInformation(
+    verify(() => mockMatchDynamicRepository.insertMatchDynamicInfo(
         tTitle, tDescription));
     verifyNoMoreInteractions(mockMatchDynamicRepository);
   });

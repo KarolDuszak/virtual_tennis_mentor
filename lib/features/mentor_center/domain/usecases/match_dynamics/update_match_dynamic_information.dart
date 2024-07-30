@@ -15,7 +15,7 @@ class UpdateMatchDynamicInformationById extends UseCase<int, Params> {
 
   @override
   Future<Either<Failure, int>> call(Params params) async {
-    return await repository.updateMatchDynamicInformation(params.matchDynamics);
+    return await repository.updateMatchDynamicInfo(params.matchDynamics);
   }
 }
 

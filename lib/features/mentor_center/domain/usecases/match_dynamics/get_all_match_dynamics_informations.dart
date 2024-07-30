@@ -13,6 +13,6 @@ class GetAllMatchDynamicInformations
 
   @override
   Future<Either<Failure, List<MatchDynamics>>> call(NoParams params) async {
-    return await repository.getAllMatchDynamicsInformations();
+    return await repository.getAllMatchDynamicsInfo();
   }
 }

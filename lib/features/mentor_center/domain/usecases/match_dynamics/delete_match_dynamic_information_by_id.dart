@@ -14,7 +14,7 @@ class DeleteMatchDynamicInformationById extends UseCase<int, Params> {
 
   @override
   Future<Either<Failure, int>> call(Params params) async {
-    return await repository.deleteMatchDynamicsInformationById(params.id);
+    return await repository.deleteMatchDynamicsInfoById(params.id);
   }
 }
 

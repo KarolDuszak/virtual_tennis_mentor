@@ -15,18 +15,16 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
       {required this.localDataSource, required this.userPreferences});
 
   @override
-  Future<Either<Failure, int>> deleteMatchDynamicsInformationById(int id) {
+  Future<Either<Failure, int>> deleteMatchDynamicsInfoById(int id) {
     // TODO: implement deleteMatchDynamicsInformationById
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, List<MatchDynamics>>>
-      getAllMatchDynamicsInformations() async {
+  Future<Either<Failure, List<MatchDynamics>>> getAllMatchDynamicsInfo() async {
     final preferedLanguage = await userPreferences.language;
     try {
-      final allMatchDynamics =
-          await localDataSource.getAllMatchDynamicsInformations();
+      final allMatchDynamics = await localDataSource.getAllMatchDynamicsInfo();
 
       final filteredMatchDynamics = allMatchDynamics
           .where((matchDynamics) =>
@@ -42,7 +40,7 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
 
   // set language property to custom
   @override
-  Future<Either<Failure, MatchDynamics>> insertMatchDynamicInformation(
+  Future<Either<Failure, MatchDynamics>> insertMatchDynamicInfo(
       String title, String description) {
     // TODO: implement insertMatchDynamicInformation
     throw UnimplementedError();
@@ -50,7 +48,7 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
   // set language property to custom
 
   @override
-  Future<Either<Failure, int>> updateMatchDynamicInformation(
+  Future<Either<Failure, int>> updateMatchDynamicInfo(
       MatchDynamics matchDynamics) {
     //needs to convert matchDynamics to MatchDynamicsModel which has language property
     // TODO: implement updateMatchDynamicInformationById

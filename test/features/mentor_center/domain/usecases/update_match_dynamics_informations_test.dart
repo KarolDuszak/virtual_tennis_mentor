@@ -26,16 +26,17 @@ void main() {
 
     // when is "On the fly" implementation return Right(tAllMatchDynamicInformations)
     // any time getAllMatchDynamicInformations is called
-    when(() => mockMatchDynamicRepository.updateMatchDynamicInformation(
-        tMatchDynamics)).thenAnswer((_) async => Right(tSuccessExitCode));
+    when(() =>
+            mockMatchDynamicRepository.updateMatchDynamicInfo(tMatchDynamics))
+        .thenAnswer((_) async => Right(tSuccessExitCode));
 
     // act
     final result = await usecase(Params(matchDynamics: tMatchDynamics));
 
     // assert
     expect(result, Right(tSuccessExitCode));
-    verify(() => mockMatchDynamicRepository
-        .updateMatchDynamicInformation(tMatchDynamics));
+    verify(() =>
+        mockMatchDynamicRepository.updateMatchDynamicInfo(tMatchDynamics));
     verifyNoMoreInteractions(mockMatchDynamicRepository);
   });
 }

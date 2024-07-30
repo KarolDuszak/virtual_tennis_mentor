@@ -15,7 +15,7 @@ class InsertMatchDynamicsInformations extends UseCase<MatchDynamics, Params> {
 
   @override
   Future<Either<Failure, MatchDynamics>> call(Params params) async {
-    return await repository.insertMatchDynamicInformation(
+    return await repository.insertMatchDynamicInfo(
         params.title, params.description);
   }
 }
