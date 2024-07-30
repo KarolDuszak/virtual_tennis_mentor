@@ -19,10 +19,16 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
     try {
       final matchDynamicsToDelete =
           await localDataSource.getMatchDynamicsInfoById(id);
+
+      if (matchDynamicsToDelete.language != 'custom') {
+        return Left(CanNotDeleteThisRecord());
+      }
       final result = await localDataSource.deleteMatchDynamicsInfoById(id);
       return Right(result);
     } on CouldNotGetException catch (_) {
       return Left(CanNotFindRecordInDb());
+    } on LocalDbException catch (_) {
+      return Left(LocalDbFailure());
     }
   }
 
