@@ -7,7 +7,7 @@ abstract class MatchDynamicRepository {
   Future<Either<Failure, int>> deleteMatchDynamicsInformationById(int id);
 
   //returns exit code 200 on success
-  Future<Either<Failure, int>> insertMatchDynamicInformation(
+  Future<Either<Failure, MatchDynamics>> insertMatchDynamicInformation(
       String title, String description);
 
   Future<Either<Failure, List<MatchDynamics>>>

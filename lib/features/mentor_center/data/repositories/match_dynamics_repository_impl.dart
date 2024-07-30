@@ -42,7 +42,7 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
 
   // set language property to custom
   @override
-  Future<Either<Failure, int>> insertMatchDynamicInformation(
+  Future<Either<Failure, MatchDynamics>> insertMatchDynamicInformation(
       String title, String description) {
     // TODO: implement insertMatchDynamicInformation
     throw UnimplementedError();
