@@ -52,8 +52,10 @@ void main() {
           // arrange
           when(() => mockUserPreferences.language)
               .thenAnswer((_) async => "en-UK");
+          when(() => mockLocalDataSource.getAllMatchDynamicsInformations())
+              .thenAnswer((_) async => tAllMatchDynamics);
           // act
-          repository.getAllMatchDynamicsInformations();
+          await repository.getAllMatchDynamicsInformations();
           // assert
           verify(() => mockUserPreferences.language);
         },
@@ -73,12 +75,17 @@ void main() {
               .thenAnswer((_) async => "en-UK");
           when(() => mockLocalDataSource.getAllMatchDynamicsInformations())
               .thenAnswer((_) async => tMatchDynamicsNoCustom);
-          // act
-          final result = repository.getAllMatchDynamicsInformations();
-          // assert
+
+          //making sure prepared data is correct
           expect(tEnglishMatchDynamics.any((item) => item.language == 'en-UK'),
               true);
-          expect(result, Right(tEnglishMatchDynamics));
+
+          // act
+          final result = await repository.getAllMatchDynamicsInformations();
+          // assert
+          expect(result, isA<Right>());
+          expect(
+              result.fold((l) => l, (r) => r), equals(tEnglishMatchDynamics));
         },
       );
 
@@ -94,16 +101,33 @@ void main() {
               .thenAnswer((_) async => "pl-PL");
           when(() => mockLocalDataSource.getAllMatchDynamicsInformations())
               .thenAnswer((_) async => tAllMatchDynamics);
-          // act
-          final result = repository.getAllMatchDynamicsInformations();
-          // assert
+
+          // making sure prepared data is correct
           expect(
               tCustomAndPolishDynamics.any((item) => item.language == 'custom'),
               true);
           expect(
               tCustomAndPolishDynamics.any((item) => item.language == 'pl-PL'),
               true);
-          expect(result, Right(tCustomAndPolishDynamics));
+          // act
+          final result = await repository.getAllMatchDynamicsInformations();
+
+          // assert
+          expect(result, isA<Right>());
+          expect(result.fold((l) => l, (r) => r),
+              equals(tCustomAndPolishDynamics));
+        },
+      );
+
+      test(
+        'should return failure on localdb exception',
+        () async {
+          // arrange
+
+          // act
+
+          // assert
+          expect(true, false);
         },
       );
     },

@@ -23,9 +23,17 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
   //and ones with'custom' as language
   @override
   Future<Either<Failure, List<MatchDynamics>>>
-      getAllMatchDynamicsInformations() {
-    userPreferences.language;
-    return Future.value(Left(LocalDbFailure()));
+      getAllMatchDynamicsInformations() async {
+    final preferedLanguage = await userPreferences.language;
+    final allMatchDynamics =
+        await localDataSource.getAllMatchDynamicsInformations();
+    final filteredMatchDynamics = allMatchDynamics
+        .where((matchDynamics) =>
+            matchDynamics.language == preferedLanguage ||
+            matchDynamics.language == 'custom')
+        .toList();
+
+    return Right(filteredMatchDynamics);
   }
 
   // set language property to custom
