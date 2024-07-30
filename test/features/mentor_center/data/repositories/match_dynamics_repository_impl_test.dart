@@ -60,7 +60,7 @@ void main() {
       );
 
       test(
-        'should not get for not languages differenet than set in user preferences',
+        'should filter only for selected language in preferences if customs are not added',
         () async {
           // arrange
           final tMatchDynamicsNoCustom =
@@ -76,12 +76,14 @@ void main() {
           // act
           final result = repository.getAllMatchDynamicsInformations();
           // assert
+          expect(tEnglishMatchDynamics.any((item) => item.language == 'en-UK'),
+              true);
           expect(result, Right(tEnglishMatchDynamics));
         },
       );
 
       test(
-        'should get both selected language and custom added',
+        'should get both selected language and custom if custom exists inside',
         () async {
           // arrange
           final tCustomAndPolishDynamics = tAllMatchDynamics
@@ -95,6 +97,12 @@ void main() {
           // act
           final result = repository.getAllMatchDynamicsInformations();
           // assert
+          expect(
+              tCustomAndPolishDynamics.any((item) => item.language == 'custom'),
+              true);
+          expect(
+              tCustomAndPolishDynamics.any((item) => item.language == 'pl-PL'),
+              true);
           expect(result, Right(tCustomAndPolishDynamics));
         },
       );
