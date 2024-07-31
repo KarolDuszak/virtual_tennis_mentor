@@ -8,7 +8,7 @@ import '../../../../fixtures/fixture_reader.dart';
 
 void main() {
   final tMatchDynamicsModel = MatchDynamicsModel(
-      id: 1, title: 'title', description: 'description', language: 'en-UK');
+      id: 1, title: 'title', description: 'description', language: 'en');
   final Map<String, dynamic> jsonMap =
       json.decode(fixture('match_dynamics.json'));
 

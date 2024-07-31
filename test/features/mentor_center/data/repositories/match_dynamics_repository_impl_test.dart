@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -16,12 +18,12 @@ class MockUserPreferences extends Mock implements UserPreferences {}
 
 String getStubLanguage(int index) {
   if (index % 2 == 0) {
-    return 'en-UK';
+    return 'en';
   }
   if (index % 3 == 0) {
     return 'custom';
   }
-  return 'pl-PL';
+  return 'pl';
 }
 
 void main() {
@@ -54,7 +56,7 @@ void main() {
         () async {
           // arrange
           when(() => mockUserPreferences.language)
-              .thenAnswer((_) async => "en-UK");
+              .thenAnswer((_) async => "en");
           when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenAnswer((_) async => tAllMatchDynamics);
           // act
@@ -65,23 +67,34 @@ void main() {
       );
 
       test(
+        'should get custom and english when not supported language is selected?',
+        () async {
+          // arrange
+
+          // act
+
+          // assert
+          expect(true, false);
+        },
+      );
+
+      test(
         'should filter only for selected language in preferences if customs are not added',
         () async {
           // arrange
           final tMatchDynamicsNoCustom =
               tAllMatchDynamics.getRange(0, 2).toList();
-          final tEnglishMatchDynamics = tMatchDynamicsNoCustom
-              .where((i) => i.language == 'en-UK')
-              .toList();
+          final tEnglishMatchDynamics =
+              tMatchDynamicsNoCustom.where((i) => i.language == 'en').toList();
 
           when(() => mockUserPreferences.language)
-              .thenAnswer((_) async => "en-UK");
+              .thenAnswer((_) async => "en");
           when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenAnswer((_) async => tMatchDynamicsNoCustom);
 
           //making sure prepared data is correct
-          expect(tEnglishMatchDynamics.any((item) => item.language == 'en-UK'),
-              true);
+          expect(
+              tEnglishMatchDynamics.any((item) => item.language == 'en'), true);
 
           // act
           final result = await repository.getAllMatchDynamicsInfo();
@@ -98,11 +111,11 @@ void main() {
         () async {
           // arrange
           final tCustomAndPolishDynamics = tAllMatchDynamics
-              .where((i) => i.language == 'custom' || i.language == 'pl-PL')
+              .where((i) => i.language == 'custom' || i.language == 'pl')
               .toList();
 
           when(() => mockUserPreferences.language)
-              .thenAnswer((_) async => "pl-PL");
+              .thenAnswer((_) async => "pl");
           when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenAnswer((_) async => tAllMatchDynamics);
 
@@ -110,8 +123,7 @@ void main() {
           expect(
               tCustomAndPolishDynamics.any((item) => item.language == 'custom'),
               true);
-          expect(
-              tCustomAndPolishDynamics.any((item) => item.language == 'pl-PL'),
+          expect(tCustomAndPolishDynamics.any((item) => item.language == 'pl'),
               true);
           // act
           final result = await repository.getAllMatchDynamicsInfo();
@@ -130,7 +142,7 @@ void main() {
         () async {
           // arrange
           when(() => mockUserPreferences.language)
-              .thenAnswer((_) async => "en-UK");
+              .thenAnswer((_) async => "en");
           when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenAnswer((_) async => List.empty());
           // act
@@ -146,7 +158,7 @@ void main() {
         () async {
           // arrange
           when(() => mockUserPreferences.language)
-              .thenAnswer((_) async => "en-UK");
+              .thenAnswer((_) async => "en");
           when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenThrow(LocalDbException());
           // act
@@ -162,7 +174,7 @@ void main() {
         () async {
           // arrange
           when(() => mockUserPreferences.language)
-              .thenAnswer((_) async => "en-UK");
+              .thenAnswer((_) async => "en");
           when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenThrow(Exception("This is exception"));
           // act
@@ -189,10 +201,7 @@ void main() {
           language: 'custom');
 
       const tMatchDynamicsNotCustom = MatchDynamicsModel(
-          id: 14,
-          title: 'title',
-          description: 'description',
-          language: 'en-UK');
+          id: 14, title: 'title', description: 'description', language: 'en');
 
       test(
         'should get fail when trying to delete not custom note',
@@ -321,7 +330,7 @@ void main() {
           language: 'custom');
 
       const tMatchDynamicsNotCustom = MatchDynamicsModel(
-          id: 3, title: 'title', description: 'description', language: 'en-UK');
+          id: 3, title: 'title', description: 'description', language: 'en');
 
       test(
         'should not update when records language is not custom',
