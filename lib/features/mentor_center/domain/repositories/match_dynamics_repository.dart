@@ -13,6 +13,6 @@ abstract class MatchDynamicRepository {
   Future<Either<Failure, List<MatchDynamics>>> getAllMatchDynamicsInfo();
 
   //returns exit code 200 on success
-  Future<Either<Failure, int>> updateMatchDynamicInfo(
+  Future<Either<Failure, MatchDynamics>> updateMatchDynamicInfo(
       MatchDynamics matchDynamics);
 }

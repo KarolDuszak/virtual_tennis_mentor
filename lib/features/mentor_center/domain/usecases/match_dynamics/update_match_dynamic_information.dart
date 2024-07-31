@@ -8,13 +8,13 @@ import '../../../../../core/error/failures.dart';
 import '../../../../../core/usecases/usecase.dart';
 import '../../repositories/match_dynamics_repository.dart';
 
-class UpdateMatchDynamicInformationById extends UseCase<int, Params> {
+class UpdateMatchDynamicInformationById extends UseCase<MatchDynamics, Params> {
   final MatchDynamicRepository repository;
 
   UpdateMatchDynamicInformationById(this.repository);
 
   @override
-  Future<Either<Failure, int>> call(Params params) async {
+  Future<Either<Failure, MatchDynamics>> call(Params params) async {
     return await repository.updateMatchDynamicInfo(params.matchDynamics);
   }
 }

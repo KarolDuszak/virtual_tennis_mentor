@@ -17,7 +17,6 @@ void main() {
     usecase = UpdateMatchDynamicInformationById(mockMatchDynamicRepository);
   });
 
-  int tSuccessExitCode = 200;
   MatchDynamics tMatchDynamics =
       MatchDynamics(id: 1, title: 'title', description: 'description');
 
@@ -28,13 +27,13 @@ void main() {
     // any time getAllMatchDynamicInformations is called
     when(() =>
             mockMatchDynamicRepository.updateMatchDynamicInfo(tMatchDynamics))
-        .thenAnswer((_) async => Right(tSuccessExitCode));
+        .thenAnswer((_) async => Right(tMatchDynamics));
 
     // act
     final result = await usecase(Params(matchDynamics: tMatchDynamics));
 
     // assert
-    expect(result, Right(tSuccessExitCode));
+    expect(result, Right(tMatchDynamics));
     verify(() =>
         mockMatchDynamicRepository.updateMatchDynamicInfo(tMatchDynamics));
     verifyNoMoreInteractions(mockMatchDynamicRepository);

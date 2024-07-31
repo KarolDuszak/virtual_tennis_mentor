@@ -7,6 +7,7 @@ import 'package:virtual_tennis_mentor/core/error/failures.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/data/datasources/match_dynamics_local_data_source.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/data/models/match_dynamics_model.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/data/repositories/match_dynamics_repository_impl.dart';
+import 'package:virtual_tennis_mentor/features/mentor_center/domain/entities/match_dynamics.dart';
 
 class MockLocalDataSource extends Mock
     implements MatchDynamicsLocalDataSource {}
@@ -159,24 +160,24 @@ void main() {
     'deleteMatchDynamicsInformationById',
     () {
       final tIdToRemove = 14;
+
       final tMatchDynamicsCustom = MatchDynamicsModel(
           id: 14,
           title: 'title',
           description: 'description',
           language: 'custom');
 
+      final tMatchDynamicsNotCustom = MatchDynamicsModel(
+          id: 14,
+          title: 'title',
+          description: 'description',
+          language: 'en-UK');
       test(
         'should get fail when trying to delete not custom note',
         () async {
           // arrange
-          final tMatchDynamicsCustom = MatchDynamicsModel(
-              id: 14,
-              title: 'title',
-              description: 'description',
-              language: 'en-UK');
-
           when(() => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove))
-              .thenAnswer((_) async => tMatchDynamicsCustom);
+              .thenAnswer((_) async => tMatchDynamicsNotCustom);
 
           // act
           final result =
@@ -247,15 +248,28 @@ void main() {
     },
   );
 
-  group('update', () {
+  group('updateMatchDynamicInfo', () {
+    final tMatchDynamicsCustom = MatchDynamicsModel(
+        id: 14, title: 'title', description: 'description', language: 'custom');
+
+    final tMatchDynamicsNotCustom = MatchDynamicsModel(
+        id: 14, title: 'title', description: 'description', language: 'en-UK');
     test(
       'should not update when records language is not custom',
       () async {
         // arrange
-
+        final matchDynamicEntity =
+            MatchDynamics(id: 3, title: 'title', description: 'description');
+        when(() => mockLocalDataSource
+                .getMatchDynamicsInfoById(matchDynamicEntity.id))
+            .thenAnswer((_) async => tMatchDynamicsNotCustom);
         // act
-
+        final result =
+            repository.updateMatchDynamicInfo(tMatchDynamicsNotCustom);
         // assert
+        verify(() => mockLocalDataSource
+            .updateMatchDynamicInfo(tMatchDynamicsNotCustom));
+        expect(result, equals(Left(CanNotExecuteFailure())));
       },
     );
 

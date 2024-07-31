@@ -62,7 +62,7 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
   // set language property to custom
 
   @override
-  Future<Either<Failure, int>> updateMatchDynamicInfo(
+  Future<Either<Failure, MatchDynamics>> updateMatchDynamicInfo(
       MatchDynamics matchDynamics) {
     //needs to convert matchDynamics to MatchDynamicsModel which has language property
     // TODO: implement updateMatchDynamicInformationById
