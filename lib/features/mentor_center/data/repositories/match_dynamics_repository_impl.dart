@@ -1,11 +1,12 @@
 import 'package:dartz/dartz.dart';
+
 import '../../../../core/config/preferences.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
-import '../datasources/match_dynamics_local_data_source.dart';
-import '../models/match_dynamics_model.dart';
 import '../../domain/entities/match_dynamics.dart';
 import '../../domain/repositories/match_dynamics_repository.dart';
+import '../datasources/match_dynamics_local_data_source.dart';
+import '../models/match_dynamics_model.dart';
 
 class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
   final MatchDynamicsLocalDataSource localDataSource;
@@ -59,11 +60,16 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
   // set language property to custom
   @override
   Future<Either<Failure, MatchDynamics>> insertMatchDynamicInfo(
-      String title, String description) {
-    // TODO: implement insertMatchDynamicInformation
-    throw UnimplementedError();
+      String title, String description) async {
+    try {
+      final result =
+          await localDataSource.insertMatchDynamicInfo(title, description);
+
+      return Right(MatchDynamics.fromModel(result));
+    } on LocalDbException catch (_) {
+      return Left(LocalDbFailure());
+    }
   }
-  // set language property to custom
 
   @override
   Future<Either<Failure, MatchDynamics>> updateMatchDynamicInfo(

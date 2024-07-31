@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:virtual_tennis_mentor/features/mentor_center/domain/entities/match_dynamics.dart';
+import '../../entities/match_dynamics.dart';
 
 import '../../../../../core/error/failures.dart';
 import '../../../../../core/usecases/usecase.dart';

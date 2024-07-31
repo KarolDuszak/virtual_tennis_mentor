@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:virtual_tennis_mentor/features/mentor_center/data/models/match_dynamics_model.dart';
+import '../../data/models/match_dynamics_model.dart';
 
 class MatchDynamics extends Equatable {
   const MatchDynamics({
