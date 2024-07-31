@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:virtual_tennis_mentor/core/config/preferences.dart';
+import 'core/config/preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
@@ -44,7 +44,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  String region = UserPreferencesDefault().getLang();
   void _incrementCounter() {
     setState(() {
       _counter++;

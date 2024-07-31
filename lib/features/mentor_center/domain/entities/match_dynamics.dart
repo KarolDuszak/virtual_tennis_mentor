@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../data/models/match_dynamics_model.dart';
 
 class MatchDynamics extends Equatable {
