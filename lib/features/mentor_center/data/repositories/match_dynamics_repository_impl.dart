@@ -25,19 +25,21 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
         return Left(CanNotExecuteFailure());
       }
 
-      final result = await localDataSource.deleteMatchDynamicsInfoById(id);
-
-      return Right(result);
+      return Right(await localDataSource.deleteMatchDynamicsInfoById(id));
     } on CouldNotGetException catch (_) {
       return Left(CanNotGetFailure());
     } on LocalDbException catch (_) {
       return Left(LocalDbFailure());
+    } catch (error, stacktrace) {
+      return Left(UnknownFailure(
+          message: error.toString(), stacktrace: stacktrace.toString()));
     }
   }
 
   @override
   Future<Either<Failure, List<MatchDynamics>>> getAllMatchDynamicsInfo() async {
     final preferedLanguage = await userPreferences.language;
+
     try {
       final allMatchDynamics = await localDataSource.getAllMatchDynamicsInfo();
 
@@ -54,6 +56,9 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
       return Right(filteredMatchDynamics);
     } on LocalDbException catch (_) {
       return Left(LocalDbFailure());
+    } catch (error, stacktrace) {
+      return Left(UnknownFailure(
+          message: error.toString(), stacktrace: stacktrace.toString()));
     }
   }
 
@@ -68,6 +73,9 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
       return Right(MatchDynamics.fromModel(result));
     } on LocalDbException catch (_) {
       return Left(LocalDbFailure());
+    } catch (error, stacktrace) {
+      return Left(UnknownFailure(
+          message: error.toString(), stacktrace: stacktrace.toString()));
     }
   }
 
@@ -90,6 +98,9 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
       return Left(CanNotGetFailure());
     } on LocalDbException catch (_) {
       return Left(LocalDbFailure());
+    } catch (error, stacktrace) {
+      return Left(UnknownFailure(
+          message: error.toString(), stacktrace: stacktrace.toString()));
     }
   }
 }

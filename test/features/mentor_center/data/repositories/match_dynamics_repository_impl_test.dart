@@ -86,6 +86,7 @@ void main() {
           // act
           final result = await repository.getAllMatchDynamicsInfo();
           // assert
+          verify(() => mockLocalDataSource.getAllMatchDynamicsInfo());
           expect(result, isA<Right>());
           expect(
               result.fold((l) => l, (r) => r), equals(tEnglishMatchDynamics));
@@ -116,6 +117,8 @@ void main() {
           final result = await repository.getAllMatchDynamicsInfo();
 
           // assert
+          verify(() => mockLocalDataSource.getAllMatchDynamicsInfo());
+          verifyNever(() => mockLocalDataSource.getAllMatchDynamicsInfo());
           expect(result, isA<Right>());
           expect(result.fold((l) => l, (r) => r),
               equals(tCustomAndPolishDynamics));
@@ -153,6 +156,24 @@ void main() {
           expect(result, equals(Left(LocalDbFailure())));
         },
       );
+
+      test(
+        'should return Unknown failure on unexpected exception',
+        () async {
+          // arrange
+          when(() => mockUserPreferences.language)
+              .thenAnswer((_) async => "en-UK");
+          when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
+              .thenThrow(Exception("This is exception"));
+          // act
+          final result = await repository.getAllMatchDynamicsInfo();
+          // assert
+          verify(() => mockLocalDataSource.getAllMatchDynamicsInfo());
+          expect(result, isA<Left>());
+          expect(result.fold((l) => l.message, (r) => r),
+              "Exception: This is exception");
+        },
+      );
     },
   );
 
@@ -172,12 +193,16 @@ void main() {
           title: 'title',
           description: 'description',
           language: 'en-UK');
+
       test(
         'should get fail when trying to delete not custom note',
         () async {
           // arrange
           when(() => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove))
               .thenAnswer((_) async => tMatchDynamicsNotCustom);
+          when(() =>
+                  mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove))
+              .thenAnswer((_) async => 200);
 
           // act
           final result =
@@ -185,6 +210,8 @@ void main() {
           // assert
           verify(
               () => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove));
+          verifyNever(() =>
+              mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove));
           expect(result, equals(Left(CanNotExecuteFailure())));
         },
       );
@@ -206,6 +233,8 @@ void main() {
           // assert
           verify(
               () => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove));
+          verify(() =>
+              mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove));
           expect(result, const Right(200));
         },
       );
@@ -216,6 +245,10 @@ void main() {
           // arrange
           when(() => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove))
               .thenThrow(CouldNotGetException());
+          when(() =>
+                  mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove))
+              .thenAnswer((_) async => 200);
+
           // act
           final result =
               await repository.deleteMatchDynamicsInfoById(tIdToRemove);
@@ -223,6 +256,8 @@ void main() {
           // assert
           verify(
               () => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove));
+          verifyNever(() =>
+              mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove));
           expect(result, equals(Left(CanNotGetFailure())));
         },
       );
@@ -243,6 +278,25 @@ void main() {
           verify(() =>
               mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove));
           expect(result, equals(Left(LocalDbFailure())));
+        },
+      );
+
+      test(
+        'should return Unknown failure on unexpected exception',
+        () async {
+          // arrange
+          when(() => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove))
+              .thenAnswer((_) async => tMatchDynamicsCustom);
+          when(() =>
+                  mockLocalDataSource.deleteMatchDynamicsInfoById(tIdToRemove))
+              .thenThrow(Exception("This is exception"));
+          // act
+          final result =
+              await repository.deleteMatchDynamicsInfoById(tIdToRemove);
+          // assert
+          expect(result, isA<Left>());
+          expect(result.fold((l) => l.message, (r) => r),
+              "Exception: This is exception");
         },
       );
     },
@@ -275,12 +329,16 @@ void main() {
           // arrange
           when(() => mockLocalDataSource.getMatchDynamicsInfoById(3))
               .thenAnswer((_) async => tMatchDynamicsNotCustom);
-
+          when(() => mockLocalDataSource.updateMatchDynamicInfo(
+              tMatchDynamicsNotCustom)).thenAnswer((_) async => tUpdatedModel);
           // act
           final result =
               await repository.updateMatchDynamicInfo(tMatchDynamicEntity);
 
           // assert
+          verify(() => mockLocalDataSource.getMatchDynamicsInfoById(3));
+          verifyNever(() => mockLocalDataSource
+              .updateMatchDynamicInfo(tMatchDynamicsNotCustom));
           expect(result, equals(Left(CanNotExecuteFailure())));
         },
       );
@@ -315,13 +373,16 @@ void main() {
           // arrange
           when(() => mockLocalDataSource.getMatchDynamicsInfoById(3))
               .thenThrow(CouldNotGetException());
-
+          when(() => mockLocalDataSource.updateMatchDynamicInfo(
+              tMatchDynamicsNotCustom)).thenAnswer((_) async => tUpdatedModel);
           // act
           final result =
               await repository.updateMatchDynamicInfo(tMatchDynamicEntity);
 
           // assert
           verify(() => mockLocalDataSource.getMatchDynamicsInfoById(3));
+          verifyNever(() => mockLocalDataSource
+              .updateMatchDynamicInfo(tMatchDynamicsNotCustom));
           expect(result, equals(Left(CanNotGetFailure())));
         },
       );
@@ -341,6 +402,24 @@ void main() {
 
           // assert
           expect(result, equals(Left(LocalDbFailure())));
+        },
+      );
+
+      test(
+        'should return Unknown failure on unexpected exception',
+        () async {
+          // arrange
+          when(() => mockLocalDataSource.getMatchDynamicsInfoById(3))
+              .thenAnswer((_) async => tMatchDynamicsCustom);
+          when(() => mockLocalDataSource.updateMatchDynamicInfo(tUpdatedModel))
+              .thenThrow(Exception("This is exception"));
+          // act
+          final result =
+              await repository.updateMatchDynamicInfo(tMatchDynamicEntity);
+          // assert
+          expect(result, isA<Left>());
+          expect(result.fold((l) => l.message, (r) => r),
+              equals("Exception: This is exception"));
         },
       );
     },
@@ -384,6 +463,23 @@ void main() {
 
           // assert
           expect(result, equals(Left(LocalDbFailure())));
+        },
+      );
+
+      test(
+        'should return Unknown failure on unexpected exception',
+        () async {
+          // arrange
+
+          when(() => mockLocalDataSource.insertMatchDynamicInfo(
+              tTitle, tDescription)).thenThrow(Exception("This is exception"));
+          // act
+          final result =
+              await repository.insertMatchDynamicInfo(tTitle, tDescription);
+          // assert
+          expect(result, isA<Left>());
+          expect(result.fold((l) => l.message, (r) => r),
+              equals("Exception: This is exception"));
         },
       );
     },
