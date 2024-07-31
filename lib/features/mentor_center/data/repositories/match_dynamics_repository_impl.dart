@@ -68,16 +68,22 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
   @override
   Future<Either<Failure, MatchDynamics>> updateMatchDynamicInfo(
       MatchDynamics matchDynamics) async {
-    final modelToUpdate =
-        await localDataSource.getMatchDynamicsInfoById(matchDynamics.id);
+    try {
+      final modelToUpdate =
+          await localDataSource.getMatchDynamicsInfoById(matchDynamics.id);
 
-    if (modelToUpdate.language != 'custom') {
-      return Left(CanNotExecuteFailure());
+      if (modelToUpdate.language != 'custom') {
+        return Left(CanNotExecuteFailure());
+      }
+      final updatedModel =
+          MatchDynamicsModel.fromEntity(matchDynamics, modelToUpdate.language);
+      final result = await localDataSource.updateMatchDynamicInfo(updatedModel);
+
+      return Right(MatchDynamics.fromModel(result));
+    } on CouldNotGetException catch (_) {
+      return Left(CanNotGetFailure());
+    } on LocalDbException catch (_) {
+      return Left(LocalDbFailure());
     }
-    final updatedModel =
-        MatchDynamicsModel.fromEntity(matchDynamics, modelToUpdate.language);
-    final result = await localDataSource.updateMatchDynamicInfo(updatedModel);
-
-    return Right(MatchDynamics.fromModel(result));
   }
 }

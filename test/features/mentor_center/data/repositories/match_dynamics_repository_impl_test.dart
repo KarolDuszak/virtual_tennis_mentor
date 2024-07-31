@@ -288,13 +288,7 @@ void main() {
                 .getMatchDynamicsInfoById(tMatchDynamicEntity.id))
             .thenAnswer((_) async => tMatchDynamicsCustom);
         when(
-          () => mockLocalDataSource.updateMatchDynamicInfo(
-            MatchDynamicsModel(
-                id: tMatchDynamicEntity.id,
-                title: tMatchDynamicEntity.title,
-                description: tMatchDynamicEntity.description,
-                language: 'custom'),
-          ),
+          () => mockLocalDataSource.updateMatchDynamicInfo(tUpdatedModel),
         ).thenAnswer((_) async => tUpdatedModel);
 
         // act
@@ -302,9 +296,9 @@ void main() {
             await repository.updateMatchDynamicInfo(tMatchDynamicEntity);
 
         // assert
-        //verify(() => mockLocalDataSource
-        //    .getMatchDynamicsInfoById(tMatchDynamicEntity.id));
-        //verify(() => mockLocalDataSource.updateMatchDynamicInfo(tUpdatedModel));
+        verify(() => mockLocalDataSource
+            .getMatchDynamicsInfoById(tMatchDynamicEntity.id));
+        verify(() => mockLocalDataSource.updateMatchDynamicInfo(tUpdatedModel));
         expect(result, equals(Right(tMatchDynamicEntity)));
       },
     );
@@ -331,9 +325,9 @@ void main() {
       () async {
         // arrange
         when(() => mockLocalDataSource.getMatchDynamicsInfoById(3))
-            .thenAnswer((_) async => tMatchDynamicsNotCustom);
-        when(() => mockLocalDataSource.updateMatchDynamicInfo(
-            tMatchDynamicsNotCustom)).thenThrow(LocalDbException());
+            .thenAnswer((_) async => tMatchDynamicsCustom);
+        when(() => mockLocalDataSource.updateMatchDynamicInfo(tUpdatedModel))
+            .thenThrow(LocalDbException());
 
         // act
         final result =
