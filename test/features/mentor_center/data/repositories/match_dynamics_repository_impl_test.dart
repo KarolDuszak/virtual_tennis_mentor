@@ -345,4 +345,47 @@ void main() {
       );
     },
   );
+
+  group(
+    'insertMatchDynamicInfo',
+    () {
+      const tTitle = 'title';
+      const tDescription = 'description';
+
+      const tInsertResultModel = MatchDynamicsModel(
+          id: 1, title: tTitle, description: tDescription, language: 'custom');
+      const tInsertResult =
+          MatchDynamics(id: 1, title: tTitle, description: tDescription);
+
+      test(
+        'should return entity on success',
+        () async {
+          // arrange
+          when(() => mockLocalDataSource.insertMatchDynamicInfo(
+                  tTitle, tDescription))
+              .thenAnswer((_) async => tInsertResultModel);
+          // act
+          final result =
+              await repository.insertMatchDynamicInfo(tTitle, tDescription);
+          // assert
+          expect(result, Right(tInsertResult));
+        },
+      );
+      test(
+        'should return failure on localdb exception',
+        () async {
+          // arrange
+          when(() => mockLocalDataSource.insertMatchDynamicInfo(
+              tTitle, tDescription)).thenThrow(LocalDbException());
+
+          // act
+          final result =
+              await repository.insertMatchDynamicInfo(tTitle, tDescription);
+
+          // assert
+          expect(result, equals(Left(LocalDbFailure())));
+        },
+      );
+    },
+  );
 }
