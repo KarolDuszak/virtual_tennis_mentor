@@ -21,12 +21,12 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
           await localDataSource.getMatchDynamicsInfoById(id);
 
       if (matchDynamicsToDelete.language != 'custom') {
-        return Left(CanNotDeleteThisRecord());
+        return Left(CanNotExecuteFailure());
       }
       final result = await localDataSource.deleteMatchDynamicsInfoById(id);
       return Right(result);
     } on CouldNotGetException catch (_) {
-      return Left(CanNotFindRecordInDb());
+      return Left(CanNotGetFailure());
     } on LocalDbException catch (_) {
       return Left(LocalDbFailure());
     }
@@ -44,7 +44,7 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
               matchDynamics.language == 'custom')
           .toList();
       if (filteredMatchDynamics.isEmpty) {
-        return Left(CanNotFindRecordInDb());
+        return Left(CanNotGetFailure());
       }
       return Right(filteredMatchDynamics);
     } on LocalDbException catch (_) {

@@ -133,7 +133,7 @@ void main() {
           final result = await repository.getAllMatchDynamicsInfo();
           // assert
           verify(() => mockLocalDataSource.getAllMatchDynamicsInfo());
-          expect(result, equals(Left(CanNotFindRecordInDb())));
+          expect(result, equals(Left(CanNotGetFailure())));
         },
       );
 
@@ -184,7 +184,7 @@ void main() {
           // assert
           verify(
               () => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove));
-          expect(result, equals(Left(CanNotDeleteThisRecord())));
+          expect(result, equals(Left(CanNotExecuteFailure())));
         },
       );
 
@@ -222,7 +222,7 @@ void main() {
           // assert
           verify(
               () => mockLocalDataSource.getMatchDynamicsInfoById(tIdToRemove));
-          expect(result, equals(Left(CanNotFindRecordInDb())));
+          expect(result, equals(Left(CanNotGetFailure())));
         },
       );
 
