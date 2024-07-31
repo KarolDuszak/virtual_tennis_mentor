@@ -6,13 +6,23 @@ part 'match_dynamics_model.g.dart';
 
 @JsonSerializable()
 class MatchDynamicsModel extends MatchDynamics {
-  String language;
+  final String language;
 
-  MatchDynamicsModel(
+  const MatchDynamicsModel(
       {required super.id,
       required super.title,
       required super.description,
       required this.language});
+
+  factory MatchDynamicsModel.fromEntity(
+      MatchDynamics entity, String modelLanguage) {
+    return MatchDynamicsModel(
+      id: entity.id,
+      title: entity.title,
+      description: entity.description,
+      language: modelLanguage,
+    );
+  }
 
   factory MatchDynamicsModel.fromJson(Map<String, dynamic> json) =>
       _$MatchDynamicsModelFromJson(json);

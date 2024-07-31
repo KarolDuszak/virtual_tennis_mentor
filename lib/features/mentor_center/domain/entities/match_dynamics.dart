@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:virtual_tennis_mentor/features/mentor_center/data/models/match_dynamics_model.dart';
 
-class MatchDynamics extends Equatable{
+class MatchDynamics extends Equatable {
   const MatchDynamics({
     required this.id,
     required this.title,
@@ -12,12 +13,20 @@ class MatchDynamics extends Equatable{
   final String title;
   final String description;
   final List<String>? tips;
-  
+
+  factory MatchDynamics.fromModel(MatchDynamicsModel model) {
+    return MatchDynamics(
+      id: model.id,
+      title: model.title,
+      description: model.description,
+    );
+  }
+
   @override
   List<Object?> get props => <Object?>[
-    id,
-    title,
-    description,
-    tips,
-  ];
+        id,
+        title,
+        description,
+        tips,
+      ];
 }

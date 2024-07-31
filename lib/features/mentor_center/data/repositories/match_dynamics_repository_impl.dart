@@ -23,7 +23,9 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
       if (matchDynamicsToDelete.language != 'custom') {
         return Left(CanNotExecuteFailure());
       }
+
       final result = await localDataSource.deleteMatchDynamicsInfoById(id);
+
       return Right(result);
     } on CouldNotGetException catch (_) {
       return Left(CanNotGetFailure());
@@ -43,9 +45,11 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
               matchDynamics.language == preferedLanguage ||
               matchDynamics.language == 'custom')
           .toList();
+
       if (filteredMatchDynamics.isEmpty) {
         return Left(CanNotGetFailure());
       }
+
       return Right(filteredMatchDynamics);
     } on LocalDbException catch (_) {
       return Left(LocalDbFailure());
@@ -63,9 +67,17 @@ class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {
 
   @override
   Future<Either<Failure, MatchDynamics>> updateMatchDynamicInfo(
-      MatchDynamics matchDynamics) {
-    //needs to convert matchDynamics to MatchDynamicsModel which has language property
-    // TODO: implement updateMatchDynamicInformationById
-    throw UnimplementedError();
+      MatchDynamics matchDynamics) async {
+    final modelToUpdate =
+        await localDataSource.getMatchDynamicsInfoById(matchDynamics.id);
+
+    if (modelToUpdate.language != 'custom') {
+      return Left(CanNotExecuteFailure());
+    }
+    final updatedModel =
+        MatchDynamicsModel.fromEntity(matchDynamics, modelToUpdate.language);
+    final result = await localDataSource.updateMatchDynamicInfo(updatedModel);
+
+    return Right(MatchDynamics.fromModel(result));
   }
 }
