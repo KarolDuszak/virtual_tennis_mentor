@@ -249,60 +249,79 @@ void main() {
   );
 
   group('updateMatchDynamicInfo', () {
+    const tMatchDynamicEntity = MatchDynamics(
+        id: 3, title: 'updated title', description: 'updated description');
+
+    final tUpdatedModel = MatchDynamicsModel(
+        id: 3,
+        title: 'updated title',
+        description: 'updated description',
+        language: 'custom');
+
     final tMatchDynamicsCustom = MatchDynamicsModel(
-        id: 14, title: 'title', description: 'description', language: 'custom');
+        id: 3, title: 'title', description: 'description', language: 'custom');
 
     final tMatchDynamicsNotCustom = MatchDynamicsModel(
-        id: 14, title: 'title', description: 'description', language: 'en-UK');
+        id: 3, title: 'title', description: 'description', language: 'en-UK');
+
     test(
       'should not update when records language is not custom',
       () async {
         // arrange
-        final matchDynamicEntity =
-            MatchDynamics(id: 3, title: 'title', description: 'description');
         when(() => mockLocalDataSource
-                .getMatchDynamicsInfoById(matchDynamicEntity.id))
+                .getMatchDynamicsInfoById(tMatchDynamicEntity.id))
             .thenAnswer((_) async => tMatchDynamicsNotCustom);
         // act
-        final result =
-            repository.updateMatchDynamicInfo(tMatchDynamicsNotCustom);
+        final result = repository.updateMatchDynamicInfo(tMatchDynamicEntity);
         // assert
-        verify(() => mockLocalDataSource
-            .updateMatchDynamicInfo(tMatchDynamicsNotCustom));
         expect(result, equals(Left(CanNotExecuteFailure())));
       },
     );
 
     test(
-      'should return updated object from db',
+      'should return updated object on success',
       () async {
         // arrange
-
+        when(() => mockLocalDataSource
+                .getMatchDynamicsInfoById(tMatchDynamicEntity.id))
+            .thenAnswer((_) async => tMatchDynamicsCustom);
         // act
-
+        final result = repository.updateMatchDynamicInfo(tMatchDynamicEntity);
         // assert
+        verify(() => mockLocalDataSource
+            .getMatchDynamicsInfoById(tMatchDynamicEntity.id));
+        verify(() => mockLocalDataSource.updateMatchDynamicInfo(tUpdatedModel));
+        expect(result, equals(Right(tUpdatedModel)));
       },
     );
 
     test(
-      'should should return failure when object not found in db',
+      'should return failure when object not found in db',
       () async {
         // arrange
-
+        when(() => mockLocalDataSource.getMatchDynamicsInfoById(3))
+            .thenThrow(CouldNotGetException());
         // act
-
+        final result = repository.updateMatchDynamicInfo(tMatchDynamicEntity);
         // assert
+        verify(() => mockLocalDataSource.getMatchDynamicsInfoById(3));
+        expect(result, equals(Left(CanNotGetFailure())));
       },
     );
 
     test(
-      'should return failure on db exception',
+      'should return failure on localdb exception',
       () async {
         // arrange
-
+        when(() => mockLocalDataSource.getMatchDynamicsInfoById(3))
+            .thenAnswer((_) async => tMatchDynamicsNotCustom);
+        when(() => mockLocalDataSource.updateMatchDynamicInfo(
+            tMatchDynamicsNotCustom)).thenThrow(LocalDbException());
         // act
-
+        final result =
+            await repository.updateMatchDynamicInfo(tMatchDynamicEntity);
         // assert
+        expect(result, equals(Left(LocalDbFailure())));
       },
     );
   });
