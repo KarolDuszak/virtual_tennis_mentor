@@ -5,7 +5,7 @@ import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/match_dynamics.dart';
 import '../../domain/repositories/match_dynamics_repository.dart';
-import '../datasources/local_db/match_dynamics_local_data_source.dart';
+import '../datasources/match_dynamics_local_datasource.dart';
 import '../models/match_dynamics_model.dart';
 
 class MatchDynamicsRepositoryImpl implements MatchDynamicRepository {

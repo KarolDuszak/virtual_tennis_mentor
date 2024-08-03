@@ -1,4 +1,4 @@
-import '../../models/match_dynamics_model.dart';
+import '../models/match_dynamics_model.dart';
 
 abstract class MatchDynamicsLocalDataSource {
   Future<List<MatchDynamicsModel>> getAllMatchDynamicsInfo();
