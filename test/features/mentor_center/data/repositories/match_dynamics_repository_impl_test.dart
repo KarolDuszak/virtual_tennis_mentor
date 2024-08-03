@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:virtual_tennis_mentor/core/config/preferences.dart';
+import 'package:virtual_tennis_mentor/core/config/user_preferences.dart';
 import 'package:virtual_tennis_mentor/core/error/exceptions.dart';
 import 'package:virtual_tennis_mentor/core/error/failures.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/data/datasources/match_dynamics_local_data_source.dart';

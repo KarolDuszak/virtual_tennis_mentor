@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:virtual_tennis_mentor/core/config/preferences.dart';
+import 'package:virtual_tennis_mentor/core/config/user_preferences.dart';
 import 'package:virtual_tennis_mentor/core/platform/custom_io.dart';
 
 import '../../fixtures/fixture_reader.dart';
@@ -32,7 +32,7 @@ void main() {
         () async {
           // arrange
           when(() => mockSharedPreferences.getString('language'))
-              .thenReturn(fixture('user_preferences_default.json'));
+              .thenReturn('default');
           when(() => mockCustomIo.getLocaleName()).thenReturn("long_response");
           // act
           final result = await userPreferences.language;
@@ -48,7 +48,7 @@ void main() {
         () async {
           // arrange
           when(() => mockSharedPreferences.getString('language'))
-              .thenReturn(fixture('user_preferences.json'));
+              .thenReturn('pl');
           when(() => mockCustomIo.getLocaleName()).thenReturn("long_response");
           // act
           final result = await userPreferences.language;
@@ -62,7 +62,7 @@ void main() {
         () async {
           // arrange
           when(() => mockSharedPreferences.getString('language'))
-              .thenReturn(fixture('bad_user_preferences.json'));
+              .thenReturn('BaD Format');
           when(() => mockCustomIo.getLocaleName()).thenReturn("en_UK");
           // act
           final result = await userPreferences.language;

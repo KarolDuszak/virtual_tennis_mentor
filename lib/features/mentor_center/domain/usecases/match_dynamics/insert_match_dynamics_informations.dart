@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import '../../entities/match_dynamics.dart';
 
 import '../../../../../core/error/failures.dart';
 import '../../../../../core/usecases/usecase.dart';
+import '../../entities/match_dynamics.dart';
 import '../../repositories/match_dynamics_repository.dart';
 
 class InsertMatchDynamicsInformations extends UseCase<MatchDynamics, Params> {
