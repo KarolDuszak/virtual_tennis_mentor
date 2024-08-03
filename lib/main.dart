@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:virtual_tennis_mentor/core/platform/custom_io.dart';
 import 'core/config/preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: [
-        Locale('pl'),
+        //Locale('pl'),
         Locale('en'),
       ],
       theme: ThemeData(
@@ -44,9 +46,25 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  UserPreferences preferences = UserPreferences(CustomIo(), null);
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+  }
+
   void _incrementCounter() {
     setState(() {
+      preferences.language = 'wl';
       _counter++;
+    });
+  }
+
+  void _loadPreferences() async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      preferences = UserPreferences(CustomIo(), sharedPreferences);
     });
   }
 
@@ -61,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(Platform.localeName),
+            Text(preferences.language),
             const Text(
               'You have pushed the button this many times:',
             ),

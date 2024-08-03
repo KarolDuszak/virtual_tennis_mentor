@@ -14,14 +14,14 @@ class MockCustomIo extends Mock implements CustomIo {}
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 
 void main() {
-  late UserPreferencesImpl userPreferences;
+  late UserPreferences userPreferences;
   late MockCustomIo mockCustomIo;
   late MockSharedPreferences mockSharedPreferences;
 
   setUp(() {
     mockCustomIo = MockCustomIo();
     mockSharedPreferences = MockSharedPreferences();
-    userPreferences = UserPreferencesImpl(mockCustomIo, mockSharedPreferences);
+    userPreferences = UserPreferences(mockCustomIo, mockSharedPreferences);
   });
 
   group(
@@ -84,18 +84,6 @@ void main() {
           // assert
           expect(result.length, 2);
           expect(result, 'en');
-        },
-      );
-
-      test(
-        'should set language to preferences len(2) and lower case',
-        () async {
-          // arrange
-
-          // act
-
-          // assert
-          expect(true, false);
         },
       );
     },

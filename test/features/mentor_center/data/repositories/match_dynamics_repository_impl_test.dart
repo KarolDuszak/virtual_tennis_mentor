@@ -53,8 +53,7 @@ void main() {
         'should check which language is selected',
         () async {
           // arrange
-          when(() => mockUserPreferences.language)
-              .thenAnswer((_) async => "en");
+          when(() => mockUserPreferences.language).thenAnswer((_) => "en");
           when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenAnswer((_) async => tAllMatchDynamics);
           // act
@@ -85,8 +84,7 @@ void main() {
           final tEnglishMatchDynamics =
               tMatchDynamicsNoCustom.where((i) => i.language == 'en').toList();
 
-          when(() => mockUserPreferences.language)
-              .thenAnswer((_) async => "en");
+          when(() => mockUserPreferences.language).thenAnswer((_) => "en");
           when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenAnswer((_) async => tMatchDynamicsNoCustom);
 
@@ -112,8 +110,7 @@ void main() {
               .where((i) => i.language == 'custom' || i.language == 'pl')
               .toList();
 
-          when(() => mockUserPreferences.language)
-              .thenAnswer((_) async => "pl");
+          when(() => mockUserPreferences.language).thenAnswer((_) => "pl");
           when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenAnswer((_) async => tAllMatchDynamics);
 
@@ -139,8 +136,7 @@ void main() {
         'should return failure when no record found in db',
         () async {
           // arrange
-          when(() => mockUserPreferences.language)
-              .thenAnswer((_) async => "en");
+          when(() => mockUserPreferences.language).thenAnswer((_) => "en");
           when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenAnswer((_) async => List.empty());
           // act
@@ -155,8 +151,7 @@ void main() {
         'should return failure on localdb exception',
         () async {
           // arrange
-          when(() => mockUserPreferences.language)
-              .thenAnswer((_) async => "en");
+          when(() => mockUserPreferences.language).thenAnswer((_) => "en");
           when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenThrow(LocalDbException());
           // act
@@ -171,8 +166,7 @@ void main() {
         'should return Unknown failure on unexpected exception',
         () async {
           // arrange
-          when(() => mockUserPreferences.language)
-              .thenAnswer((_) async => "en");
+          when(() => mockUserPreferences.language).thenAnswer((_) => "en");
           when(() => mockLocalDataSource.getAllMatchDynamicsInfo())
               .thenThrow(Exception("This is exception"));
           // act

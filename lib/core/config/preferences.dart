@@ -1,41 +1,43 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../platform/custom_io.dart';
 
-abstract class UserPreferences {
-  Future<String> get language;
-  set language(Future<String> lang);
-}
-
-class UserPreferencesImpl implements UserPreferences {
+class UserPreferences {
   final CustomIo customIo;
-  final SharedPreferences sharedPreferences;
+  final SharedPreferences? sharedPreferences;
 
-  UserPreferencesImpl(this.customIo, this.sharedPreferences);
+  UserPreferences(this.customIo, this.sharedPreferences);
 
-  @override
-  Future<String> get language async {
-    String jsonString = 'default';
+  String get language {
+    String jsonString = '{"language": "deafult"}';
     try {
-      jsonString = sharedPreferences.getString('language') ?? 'deafult';
+      jsonString =
+          sharedPreferences!.getString('language') ?? '{"language": "deafult"}';
+      if (!jsonString.startsWith('{')) {
+        jsonString = '{"language": "deafult"}';
+      }
     } catch (_) {}
+
+    final decodedLanguage = jsonDecode(jsonString) as Map<String, dynamic>;
     //final decodedString = jsonString.
-    final systemLanguage = customIo.getLocaleName();
     //it should use default device language in not found in preferences
     //but enable to change it and store in app preferences
     //if(sharedPreferences.language != 'default' && null && len!=2 && language contains UperCase) then this below
-    if (jsonString != 'default' &&
-        jsonString.length == 2 &&
-        jsonString == jsonString.toLowerCase()) {
-      return Future.value(jsonString);
+    if (decodedLanguage['language'] != 'default' &&
+        decodedLanguage['language'] != "" &&
+        decodedLanguage['language'].length == 2 &&
+        decodedLanguage['language'] ==
+            decodedLanguage['language'].toLowerCase()) {
+      return decodedLanguage['language'];
     }
+    final systemLanguage = customIo.getLocaleName();
 
-    return Future.value(systemLanguage.substring(0, 2).toLowerCase());
+    return systemLanguage.substring(0, 2).toLowerCase();
   }
 
-  @override
-  set language(Future<String> lang) {
-    // TODO: implement language
-    throw UnimplementedError();
+  void set language(String lang) {
+    sharedPreferences!.setString('language', lang.toLowerCase());
   }
 }
