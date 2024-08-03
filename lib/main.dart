@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -55,8 +55,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _incrementCounter() {
+    final languages = ['pl', 'wl', 'en', 'zs', 'default', 'sf'];
+    final rang = Random();
     setState(() {
-      preferences.language = 'wl';
+      preferences.language = languages.elementAt(rang.nextInt(5));
       _counter++;
     });
   }

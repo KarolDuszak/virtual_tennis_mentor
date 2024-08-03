@@ -29,6 +29,7 @@ class UserPreferences {
   void set language(String lang) {
     if (lang == 'default' || lang.length == 2) {
       sharedPreferences!.setString('language', lang.toLowerCase());
+      return;
     }
     throw Exception('Bad preference format');
   }
