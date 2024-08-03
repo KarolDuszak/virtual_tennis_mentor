@@ -4,7 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:virtual_tennis_mentor/core/config/user_preferences.dart';
 import 'package:virtual_tennis_mentor/core/error/exceptions.dart';
 import 'package:virtual_tennis_mentor/core/error/failures.dart';
-import 'package:virtual_tennis_mentor/features/mentor_center/data/datasources/match_dynamics_local_data_source.dart';
+import 'package:virtual_tennis_mentor/features/mentor_center/data/datasources/local_db/match_dynamics_local_data_source.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/data/models/match_dynamics_model.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/data/repositories/match_dynamics_repository_impl.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/domain/entities/match_dynamics.dart';
