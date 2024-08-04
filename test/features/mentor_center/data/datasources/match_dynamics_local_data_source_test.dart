@@ -283,7 +283,7 @@ void main() {
             () async {
               // arrange
               when(() =>
-                      mockDatabase.query('match_informations', where: 'id = ?'))
+                      mockDatabase.query('match_informations', where: 'id=?'))
                   .thenAnswer(
                 (_) => Future.value([]),
               );

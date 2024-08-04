@@ -76,9 +76,23 @@ class MatchDynamicsLocalDatasourceImpl implements MatchDynamicsLocalDataSource {
   }
 
   @override
-  Future<List<MatchDynamicsModel>> getAllMatchDynamicsInfo() {
-    // TODO: implement getAllMatchDynamicsInfo
-    throw UnimplementedError();
+  Future<List<MatchDynamicsModel>> getAllMatchDynamicsInfo() async {
+    if (_database == null) {
+      throw Exception('No database found');
+    }
+
+    final result = await _database!.query('match_informations', where: 'id=?');
+
+    if (result.isEmpty) {
+      throw CouldNotGetException();
+    }
+
+    List<MatchDynamicsModel> models = [];
+
+    for (Map<String, Object?> item in result) {
+      models.add(MatchDynamicsModel.fromJson(item));
+    }
+    return Future.value(models);
   }
 
   @override
