@@ -8,8 +8,6 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:virtual_tennis_mentor/features/mentor_center/data/datasources/match_dynamics_local_datasource.dart';
 
 void main() {
-  MatchDynamicsLocalDataSource dataSource;
-
   group(
     'get database',
     () {
@@ -17,7 +15,7 @@ void main() {
         'should return passed instance of database',
         () async {
           // arrange
-          final String expected =
+          const expected =
               'sqflite_common_ffi\\databases\\match_dynamics_stub_db\\match_dynamics.db';
           if (Platform.isWindows) {
             sqfliteFfiInit();
@@ -40,13 +38,19 @@ void main() {
         'should return database from assets if null passed in constructor',
         () async {
           // arrange
-
-          // act
+          final expected = 'sqflite_common_ffi\\databases\\mentor_center.db';
           MatchDynamicsLocalDatasourceImpl dataSourceImpl =
               MatchDynamicsLocalDatasourceImpl.instance;
-          dataSourceImpl.database;
+          dataSourceImpl.resetDb();
+
+          sqfliteFfiInit();
+          databaseFactory = databaseFactoryFfi;
+
+          // act
+          final result = await dataSourceImpl.database;
+
           // assert
-          expect(true, false);
+          expect(result.path, endsWith(expected));
         },
       );
     },

@@ -1,8 +1,7 @@
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../models/match_dynamics_model.dart';
 
@@ -29,7 +28,19 @@ class MatchDynamicsLocalDatasourceImpl implements MatchDynamicsLocalDataSource {
   MatchDynamicsLocalDatasourceImpl._internal();
 
   MatchDynamicsLocalDatasourceImpl.injectDatabase(Database db) {
-    _database = db;
+    if ((Platform.isLinux || Platform.isWindows || Platform.isMacOS) &&
+        Platform.environment.containsKey('FLUTTER_TEST')) {
+      print("TEST MODE");
+      _database = db;
+    }
+  }
+
+  void resetDb() {
+    if ((Platform.isLinux || Platform.isWindows || Platform.isMacOS) &&
+        Platform.environment.containsKey('FLUTTER_TEST')) {
+      print("TEST MODE");
+      _database = null;
+    }
   }
 
   Future<Database> get database async {
@@ -41,9 +52,20 @@ class MatchDynamicsLocalDatasourceImpl implements MatchDynamicsLocalDataSource {
     return _database!;
   }
 
+  Future _createDatabase(Database db, int version) async {
+    await db.execute('''CREATE TABLE match_informations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      language TEXT NOT NULL
+    )''');
+  }
+
   Future<Database> _initDatabase() async {
-    //TODO: Load database from assets
-    throw UnimplementedError();
+    final databasePath = await getDatabasesPath();
+    final path = '$databasePath/mentor_center.db';
+
+    return await openDatabase(path, version: 1, onCreate: _createDatabase);
   }
 
   @override
