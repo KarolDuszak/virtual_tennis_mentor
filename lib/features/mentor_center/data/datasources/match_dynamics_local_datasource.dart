@@ -88,15 +88,40 @@ class MatchDynamicsLocalDatasourceImpl implements MatchDynamicsLocalDataSource {
 
   @override
   Future<MatchDynamicsModel> insertMatchDynamicInfo(
-      String title, String description) {
-    // TODO: implement insertMatchDynamicInfo
-    throw UnimplementedError();
+      String title, String description) async {
+    if (_database == null) {
+      throw Exception('No database found');
+    }
+
+    final values = <String, dynamic>{
+      'title': title,
+      'description': description,
+      'language': 'custom',
+    };
+
+    int id = await _database!.insert('match_informations', values);
+
+    return MatchDynamicsModel(
+        id: id, title: title, description: description, language: 'custom');
   }
 
   @override
   Future<MatchDynamicsModel> updateMatchDynamicInfo(
-      MatchDynamicsModel matchDynamic) {
-    // TODO: implement updateMatchDynamicInfo
-    throw UnimplementedError();
+      MatchDynamicsModel matchDynamic) async {
+    // should throw exeption when more than 1 is updated and revert
+    // should throw exception when 0 is updated
+    if (_database == null) {
+      throw Exception('No database found');
+    }
+
+    int numOfUpdates = await _database!.update(
+        'match_informations', matchDynamic.toJson(),
+        where: 'id=${matchDynamic.id}');
+
+    if (numOfUpdates == 0) {
+      throw Exception('No object was updated!');
+    }
+
+    return Future.value(matchDynamic);
   }
 }
