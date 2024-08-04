@@ -60,76 +60,161 @@ void main() {
     },
   );
 
-  group('database operations', () {
-    late MatchDynamicsLocalDatasourceImpl dataSourceImpl;
-    late MockDatabase mockDatabase;
-    const tMatchDynamics = MatchDynamicsModel(
-        id: 1, title: 'title', description: 'description', language: 'custom');
+  group(
+    'database operations',
+    () {
+      late MatchDynamicsLocalDatasourceImpl dataSourceImpl;
+      late MockDatabase mockDatabase;
+      const tMatchDynamics = MatchDynamicsModel(
+          id: 1,
+          title: 'title',
+          description: 'description',
+          language: 'custom');
 
-    setUp(() async {
-      mockDatabase = MockDatabase();
-      dataSourceImpl =
-          MatchDynamicsLocalDatasourceImpl.injectDatabase(mockDatabase);
-    });
+      setUp(() async {
+        mockDatabase = MockDatabase();
+        dataSourceImpl =
+            MatchDynamicsLocalDatasourceImpl.injectDatabase(mockDatabase);
+      });
 
-    test(
-      'should return model if insert was successful',
-      () async {
-        // arrange
-        String title = 'Test Title';
-        String description = 'Test Description';
-        when(() => mockDatabase.insert('match_informations', any()))
-            .thenAnswer((_) => Future.value(1));
+      group(
+        'add and edit to database',
+        () {
+          test(
+            'should return model if insert was successful',
+            () async {
+              // arrange
+              String title = 'Test Title';
+              String description = 'Test Description';
+              when(() => mockDatabase.insert('match_informations', any()))
+                  .thenAnswer((_) => Future.value(1));
 
-        // act
-        final result =
-            await dataSourceImpl.insertMatchDynamicInfo(title, description);
+              // act
+              final result = await dataSourceImpl.insertMatchDynamicInfo(
+                  title, description);
 
-        // assert
-        expect(result, isA<MatchDynamicsModel>());
-        expect(result.id, 1);
-        expect(result.title, title);
-        expect(result.description, description);
-      },
-    );
+              // assert
+              expect(result, isA<MatchDynamicsModel>());
+              expect(result.id, 1);
+              expect(result.title, title);
+              expect(result.description, description);
+            },
+          );
 
-    test(
-      'should update object to new values',
-      () async {
-        // arrange
-        when(() => mockDatabase.update(
-                'match_informations', tMatchDynamics.toJson(),
-                where: 'id=${tMatchDynamics.id}'))
-            .thenAnswer((_) => Future.value(1));
+          test(
+            'should update object to new values',
+            () async {
+              // arrange
+              when(() => mockDatabase.update(
+                      'match_informations', tMatchDynamics.toJson(),
+                      where: 'id=${tMatchDynamics.id}'))
+                  .thenAnswer((_) => Future.value(1));
 
-        // act
-        final result =
-            await dataSourceImpl.updateMatchDynamicInfo(tMatchDynamics);
+              // act
+              final result =
+                  await dataSourceImpl.updateMatchDynamicInfo(tMatchDynamics);
 
-        // assert
-        expect(result, isA<MatchDynamicsModel>());
-        expect(result.id, 1);
-        expect(result.title, 'title');
-        expect(result.description, 'description');
-      },
-    );
+              // assert
+              expect(result, isA<MatchDynamicsModel>());
+              expect(result.id, 1);
+              expect(result.title, 'title');
+              expect(result.description, 'description');
+            },
+          );
 
-    test(
-      'should throw exception when 0 objects where updated',
-      () async {
-        // arrange
-        when(() => mockDatabase.update(
-                'match_informations', tMatchDynamics.toJson(),
-                where: 'id=${tMatchDynamics.id}'))
-            .thenAnswer((_) => Future.value(0));
+          test(
+            'should throw exception when 0 objects where updated',
+            () async {
+              // arrange
+              when(() => mockDatabase.update(
+                      'match_informations', tMatchDynamics.toJson(),
+                      where: 'id=${tMatchDynamics.id}'))
+                  .thenAnswer((_) => Future.value(0));
 
-        // act
-        // assert
-        expect(
-            () async =>
-                await dataSourceImpl.updateMatchDynamicInfo(tMatchDynamics),
-            throwsException);
-      },
-    );
-  });
+              // act
+              // assert
+              expect(
+                  () async => await dataSourceImpl
+                      .updateMatchDynamicInfo(tMatchDynamics),
+                  throwsException);
+            },
+          );
+        },
+      );
+
+      group(
+        'deleting from database',
+        () {
+          test(
+            'should return 200 when delete object',
+            () async {
+              // arrange
+              when(() => mockDatabase.delete('match_informations',
+                      where: 'id=${tMatchDynamics.id}'))
+                  .thenAnswer((_) => Future.value(1));
+
+              // act
+              final result =
+                  await dataSourceImpl.deleteMatchDynamicsInfoById(1);
+
+              // assert
+              expect(result, 200);
+            },
+          );
+
+          test(
+            'should throw exception when 0 is deleted',
+            () async {
+              when(() =>
+                      mockDatabase.delete('match_informations', where: 'id=1'))
+                  .thenAnswer((_) => Future.value(0));
+
+              // act
+              // assert
+              expect(
+                  () async =>
+                      await dataSourceImpl.deleteMatchDynamicsInfoById(1),
+                  throwsException);
+            },
+          );
+
+          test(
+            'should throw exception when more than 1 is deleted',
+            () async {
+              when(() =>
+                      mockDatabase.delete('match_informations', where: 'id=1'))
+                  .thenAnswer((_) => Future.value(2));
+
+              // act
+              // assert
+              expect(
+                  () async =>
+                      await dataSourceImpl.deleteMatchDynamicsInfoById(1),
+                  throwsException);
+            },
+          );
+        },
+      );
+
+      group(
+        'get from database',
+        () {
+          test(
+            'should throw exception when getMatchDynamicsInfoById not found',
+            () async {
+              // arrange
+              when(() =>
+                      mockDatabase.query('match_informations', where: 'id=1'))
+                  .thenAnswer((_) => Future.value([<String, dynamic>{}]));
+              // act
+              // assert
+              expect(
+                  () async => await dataSourceImpl.getMatchDynamicsInfoById(1),
+                  throwsException);
+            },
+          );
+        },
+      );
+    },
+  );
 }
