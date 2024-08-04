@@ -206,7 +206,7 @@ void main() {
               // arrange
               when(() => mockDatabase.query('match_informations',
                       where: 'id=${tMatchDynamics.id}'))
-                  .thenAnswer((_) => Future.value([<String, dynamic>{}]));
+                  .thenAnswer((_) => Future.value([]));
               // act
               // assert
               expect(

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:virtual_tennis_mentor/core/error/exceptions.dart';
 
 import '../models/match_dynamics_model.dart';
 
@@ -81,9 +82,19 @@ class MatchDynamicsLocalDatasourceImpl implements MatchDynamicsLocalDataSource {
   }
 
   @override
-  Future<MatchDynamicsModel> getMatchDynamicsInfoById(int id) {
-    // TODO: implement getMatchDynamicsInfoById
-    throw UnimplementedError();
+  Future<MatchDynamicsModel> getMatchDynamicsInfoById(int id) async {
+    if (_database == null) {
+      throw Exception('No database found');
+    }
+
+    final result =
+        await _database!.query('match_informations', where: 'id=$id');
+
+    if (result.length != 1) {
+      throw CouldNotGetException();
+    }
+
+    return Future.value(MatchDynamicsModel.fromJson(result[0]));
   }
 
   @override
