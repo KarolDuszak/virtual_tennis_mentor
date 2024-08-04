@@ -70,9 +70,23 @@ class MatchDynamicsLocalDatasourceImpl implements MatchDynamicsLocalDataSource {
   }
 
   @override
-  Future<int> deleteMatchDynamicsInfoById(int id) {
-    // TODO: implement deleteMatchDynamicsInfoById
-    throw UnimplementedError();
+  Future<int> deleteMatchDynamicsInfoById(int id) async {
+    if (_database == null) {
+      throw Exception('No database found');
+    }
+
+    final result =
+        await _database!.delete('match_informations', where: 'id=$id');
+
+    if (result == 0) {
+      throw CouldNotDeleteException();
+    }
+
+    if (result > 1) {
+      throw Exception();
+    }
+
+    return Future.value(200);
   }
 
   @override
