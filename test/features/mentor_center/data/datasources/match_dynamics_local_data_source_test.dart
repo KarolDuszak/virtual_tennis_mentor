@@ -116,9 +116,10 @@ void main() {
 
               // assert
               expect(result, isA<MatchDynamicsModel>());
-              expect(result.id, 1);
-              expect(result.title, 'title');
-              expect(result.description, 'description');
+              expect(result.id, tMatchDynamics.id);
+              expect(result.title, tMatchDynamics.title);
+              expect(result.description, tMatchDynamics.description);
+              expect(result.language, tMatchDynamics.language);
             },
           );
 
@@ -200,7 +201,7 @@ void main() {
         'get from database',
         () {
           test(
-            'should throw exception when getMatchDynamicsInfoById not found',
+            'should getMatchDynamicsInfoById throw exception when not found',
             () async {
               // arrange
               when(() =>
@@ -211,6 +212,70 @@ void main() {
               expect(
                   () async => await dataSourceImpl.getMatchDynamicsInfoById(1),
                   throwsException);
+            },
+          );
+
+          test(
+            'should getMatchDynamicsInfoById throw exception when more than one found',
+            () async {
+              // arrange
+              when(() =>
+                      mockDatabase.query('match_informations', where: 'id=1'))
+                  .thenAnswer(
+                (_) => Future.value(
+                  [
+                    <String, dynamic>{
+                      'id': tMatchDynamics.id,
+                      'title': tMatchDynamics.title,
+                      'description': tMatchDynamics.description,
+                      'language': tMatchDynamics.language,
+                    },
+                    <String, dynamic>{
+                      'id': tMatchDynamics.id + 1,
+                      'title': tMatchDynamics.title + '2',
+                      'description': tMatchDynamics.description + '2',
+                      'language': tMatchDynamics.language,
+                    }
+                  ],
+                ),
+              );
+              // act
+              // assert
+              expect(
+                  () async => await dataSourceImpl.getMatchDynamicsInfoById(1),
+                  throwsException);
+            },
+          );
+
+          test(
+            'should getMatchDynamicsInfoById return model object',
+            () async {
+              // arrange
+              when(() =>
+                      mockDatabase.query('match_informations', where: 'id=1'))
+                  .thenAnswer(
+                (_) => Future.value(
+                  [
+                    <String, dynamic>{
+                      'id': tMatchDynamics.id,
+                      'title': tMatchDynamics.title,
+                      'description': tMatchDynamics.description,
+                      'language': tMatchDynamics.language,
+                    }
+                  ],
+                ),
+              );
+
+              // act
+              final result = await dataSourceImpl
+                  .getMatchDynamicsInfoById(tMatchDynamics.id);
+
+              // assert
+              expect(result, isA<MatchDynamicsModel>());
+              expect(result.id, tMatchDynamics.id);
+              expect(result.title, tMatchDynamics.title);
+              expect(result.description, tMatchDynamics.description);
+              expect(result.language, tMatchDynamics.language);
             },
           );
         },
